@@ -22,9 +22,6 @@ OBJ=$(subst .c,.o,$(subst $(SRC_DIR),$(BIN_DIR),$(C_SRC)))
 #
 all: binFolder $(PROJ_NAME)
 
-# test:
-# 	@ echo "$(C_SRC)\n$(H_SRC)\n$(OBJ)"
-
 $(PROJ_NAME): $(OBJ)
 	@ echo 'Building binary using GCC linker: $@'
 	$(CC) $^ $(LN_FLAGS) -o $@
@@ -41,6 +38,10 @@ $(PROJ_NAME): $(OBJ)
 	$(CC) $(CC_FLAGS) $< -o $@
 	@ echo ' '
 
+reset_db:
+	@ ./script/create_user_and_db.sh
+	@ echo "Reset successful"
+
 binFolder:
 	@ mkdir -p $(BIN_DIR)
 
@@ -48,4 +49,4 @@ clean:
 	@ rm -rf ./$(BIN_DIR)/*.o $(PROJ_NAME) *~
 	@ rm -rf $(BIN_DIR)
 
-.PHONY: all clean
+.PHONY: all clean reset_db

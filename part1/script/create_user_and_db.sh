@@ -68,17 +68,22 @@ else
     exit -1
 fi
 
-# 7. Grant all privileges on the database to the user
+# 7. Changing the owner of the database to the user
+echo "Changing the owner  on DATABASE $DB_NAME to user $USER..."
+sudo -u postgres psql -c "ALTER DATABASE $DB_NAME OWNER TO $USER;"
+echo "Owner changed successfully."
+
+# 8. Grant all privileges on the database to the user
 echo "Granting all privileges on DATABASE $DB_NAME to user $USER..."
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $USER;"
 echo "All privileges granted successfully."
 
-# 8. Enable the PostGIS extension on the database
+# 9. Enable the PostGIS extension on the database
 echo "Enabling PostGIS extension on database $DB_NAME..."
 sudo -u postgres psql -d $DB_NAME -c "CREATE EXTENSION IF NOT EXISTS postgis;"
 echo "PostGIS extension enabled successfully."
 
-# 9. Print the PostGIS version to verify that the extension is enabled
+# 10. Print the PostGIS version to verify that the extension is enabled
 echo "PostGIS version:"
 sudo -u postgres psql -d $DB_NAME -c "SELECT PostGIS_version();"
 

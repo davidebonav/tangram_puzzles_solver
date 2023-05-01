@@ -8,7 +8,6 @@
 
 int createPiecesTable(PGconn *conn)
 {
-  PGresult *res;
   int num_rows;
   const char *create_table_sql = "CREATE TABLE IF NOT EXISTS \
       pieces( \
@@ -17,21 +16,13 @@ int createPiecesTable(PGconn *conn)
           color VARCHAR(20), \
           shape GEOMETRY);";
 
-  // Create the 'pieces' table
-  res = PQexec(conn, create_table_sql);
-  if (PQresultStatus(res) != PGRES_COMMAND_OK)
-    finish_with_error(conn, res, "Table pieces creation failed:");
+  num_rows = createTable(conn, create_table_sql);
 
-  num_rows = atoi(PQcmdTuples(res));
-  // num_rows == 0 ? Table already existed : Table created
-  
-  PQclear(res);
   return num_rows;
 }
 
 int populatePiecesTable(PGconn *conn)
 {
-  PGresult *res;
   const char *insert_sql = "INSERT INTO pieces(piece_type, color, shape) \
       VALUES('large_right_triangle', 'red', 'POLYGON((0 0, 0.5 0.5, 1 0, 0 0))'), \
              ('large_right_triangle', 'orange', 'POLYGON((0 0, 0.5 0.5, 1 0, 0 0))'), \
@@ -48,26 +39,20 @@ int populatePiecesTable(PGconn *conn)
     • 1 parallelogram (sides of 1/2 and √2/4, height of 1/4, area 1/8)
   */
 
-  // Insert the data into the 'pieces' table
-  res = PQexec(conn, insert_sql);
-  if (PQresultStatus(res) != PGRES_COMMAND_OK)
-    finish_with_error(conn, res, "Data insertion failed in pieces table");
-  PQclear(res);
+  return insertIntoTable(conn, insert_sql);
+}
 
+int createAndPopulatePiecesTable(PGconn *conn)
+{
+  if (createPiecesTable(conn) != 0 || countRowPiecesTable(conn) == 0)
+    populatePiecesTable(conn);
   return 0;
 }
 
-int testPiecesTable(PGconn *conn)
+int printPiecesTable(PGconn *conn)
 {
-  PGresult *res;
-  const char *query_select_sql = "SELECT id,piece_type, color, st_astext(shape) from pieces";
-
-  // Execute the select query
-  res = PQexec(conn, query_select_sql);
-
-  // Check if the query was executed successfully
-  if (PQresultStatus(res) != PGRES_TUPLES_OK)
-    finish_with_error(conn, res, "Error executing query");
+  const char *query = "SELECT id,piece_type, color, st_astext(shape) from pieces";
+  PGresult *res = sqlQuery(conn, query);
 
   // Get the number of rows and columns in the result
   int n_rows = PQntuples(res);
@@ -89,19 +74,11 @@ int testPiecesTable(PGconn *conn)
   return 0;
 }
 
-int countPiecesTable(PGconn *conn)
+int countRowPiecesTable(PGconn *conn)
 {
-  PGresult *res;
-  const char *query_select_sql = "SELECT COUNT(*) from pieces";
+  const char *query = "SELECT COUNT(*) from pieces";
+  PGresult *res = sqlQuery(conn, query);
 
-  // Execute the select query
-  res = PQexec(conn, query_select_sql);
-
-  // Check if the query was executed successfully
-  if (PQresultStatus(res) != PGRES_TUPLES_OK)
-    finish_with_error(conn, res, "Error executing query");
-
-  // Get the number of rows and columns in the result
   int n = atoi(PQgetvalue(res, 0, 0));
 
   // Free the memory used by the result and close the connection

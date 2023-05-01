@@ -7,9 +7,8 @@
 int main()
 {
   PGconn *conn = db_connect();
-  if (createPiecesTable(conn) != 0 || countPiecesTable(conn) == 0)
-    populatePiecesTable(conn);
-  testPiecesTable(conn);
+  createAndPopulatePiecesTable(conn);
+  printPiecesTable(conn);
 
   PQfinish(conn);
   return 0;

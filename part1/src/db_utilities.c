@@ -35,6 +35,8 @@ PGconn *db_connect()
 
 int createTable(PGconn *conn, const char *create_table_sql)
 {
+    printf("Creating table...\n");
+
     PGresult *res;
     int num_rows;
 
@@ -56,6 +58,8 @@ int createTable(PGconn *conn, const char *create_table_sql)
 
 int insertIntoTable(PGconn *conn, const char *insert_sql)
 {
+    printf("Adding pieces into table...\n");
+
     PGresult *res;
 
     // Insert the data into the 'tableName' table
@@ -73,10 +77,9 @@ int insertIntoTable(PGconn *conn, const char *insert_sql)
 PGresult *sqlQuery(PGconn *conn, const char *sql_query)
 {
     PGresult *res;
-    const char *query_select_sql = "SELECT id,piece_type, color, st_astext(shape) from pieces";
 
     // Execute the select query
-    res = PQexec(conn, query_select_sql);
+    res = PQexec(conn, sql_query);
 
     // Check if the query was executed successfully
     if (PQresultStatus(res) != PGRES_TUPLES_OK)

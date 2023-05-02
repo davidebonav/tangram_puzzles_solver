@@ -46,6 +46,9 @@ int createAndPopulatePiecesTable(PGconn *conn)
 {
   if (createPiecesTable(conn) != 0 || countRowPiecesTable(conn) == 0)
     populatePiecesTable(conn);
+  else
+    printf("Table already populated, skipping...\n");
+    
   return 0;
 }
 

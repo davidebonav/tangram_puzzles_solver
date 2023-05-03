@@ -14,7 +14,7 @@ int createPiecesTable(PGconn *conn)
           id SERIAL PRIMARY KEY, \
           piece_type VARCHAR(40), \
           color VARCHAR(20), \
-          shape GEOMETRY);";
+          shape GEOMETRY(POLYGON,3763));";
 
   num_rows = createTable(conn, create_table_sql);
 

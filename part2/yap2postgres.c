@@ -85,6 +85,8 @@ static int c_db_disconnect(void) {
 }
 
 static int c_db_query(void) {
+    // printf("Entering in db_query...\n");
+
     YAP_Term 
         arg_conn        = YAP_ARG1,
         arg_sql         = YAP_ARG2,
@@ -108,6 +110,8 @@ static int c_db_query(void) {
 }
 
 static int c_db_row_start(void) {
+    // printf("Entering in db_row_start...\n");
+
     YAP_PRESERVE_DATA(c_db_row_data, c_db_row_type);
     c_db_row_data->current_row = YAP_MkIntTerm(0);
 
@@ -115,6 +119,8 @@ static int c_db_row_start(void) {
 }
 
 static int c_db_row_continue(void) {
+    // printf("Entering in db_row_continue...\n");
+
     PGresult *res_set;
     int i, arity, n_rows;
     char *value;
@@ -144,6 +150,7 @@ static int c_db_row_continue(void) {
 }
 
 static int c_db_row_cut(void) {
+    // printf("entering in db_row_cut...\n");
     PGresult *res_set = (PGresult*) YAP_IntOfTerm(YAP_ARG1);
     PQclear(res_set);
     return TRUE;

@@ -1,6 +1,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#define GEOM_OID 39689 //25637//38625// 3614
+
 static bool finish_with_error(PGconn *conn, PGresult *res)
 {
     fprintf(stderr, "%s\n", PQerrorMessage(conn));
@@ -22,6 +24,8 @@ char* extract_geometry(PGconn *conn, char* origin_value) {
     }
     return PQgetvalue(cast_res, 0, 0);
 }
+
+
 
 
 

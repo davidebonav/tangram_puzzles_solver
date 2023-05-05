@@ -144,7 +144,8 @@ static int c_db_row_continue(void)
             list = YAP_TailOfTerm(list);
             value = PQgetvalue(res_set, i, j);
             // POLYGON oid
-            if(PQftype(res_set, j) == 25637) {
+            // printf("%s - %d\n", value, PQftype(res_set, j));
+            if(PQftype(res_set, j) == (Oid) GEOM_OID) {
                 value = extract_geometry(conn, value);
             } 
             if (!YAP_Unify(head, YAP_MkAtomTerm(YAP_LookupAtom(value ? value : "NULL"))))

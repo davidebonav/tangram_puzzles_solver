@@ -51,7 +51,7 @@ YAP_Term extract_values(PGconn *conn, char* geometry, int n_int_rings)
     sprintf(sql, "SELECT ST_NPoints('%s')", ext_ring);
     int n_ext_points = atoi(PQgetvalue(exec_sql(conn, sql), 0, 0));
     double *arr = malloc(n_ext_points*2*sizeof(double));
-    
+
     extract_points_from_ring(conn, ext_ring, n_ext_points, arr);
     rings_term[0] = YAP_FloatsToList(arr, n_ext_points*2);
     free(arr);
@@ -67,7 +67,9 @@ YAP_Term extract_values(PGconn *conn, char* geometry, int n_int_rings)
         rings_term[i] = YAP_FloatsToList(arr, n_int_points*2);
         free(arr);
     }
-    return YAP_MkListFromTerms(rings_term, n_int_rings +1);
+    YAP_Term res = YAP_MkListFromTerms(rings_term, n_int_rings +1);
+    free(rings_term);
+    return res;
 }
 
 /**

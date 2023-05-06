@@ -40,19 +40,21 @@ char* extract_geometry(PGconn *conn, char* origin_value) {
     return PQgetvalue(cast_res, 0, 0);
 }
 
-double** extract_values(PGconn *conn, char* geometry, int n_int_rings)
+YAP_Term extract_values(PGconn *conn, char* geometry, int n_int_rings)
 {
     char sql[1024];
-    
+    YAP_Term *rings_term = malloc((n_int_rings +1) * sizeof(YAP_Term*));
+
     sprintf(sql, "SELECT ST_ExteriorRing('%s')", geometry);
     char *ext_ring = PQgetvalue(exec_sql(conn, sql), 0, 0); 
+
     sprintf(sql, "SELECT ST_NPoints('%s')", ext_ring);
     int n_ext_points = atoi(PQgetvalue(exec_sql(conn, sql), 0, 0));
-
-    double **rings = malloc((n_int_rings +1) * sizeof(double*));
+    double *arr = malloc(n_ext_points*2*sizeof(double));
     
-    rings[0] = malloc(n_ext_points*2*sizeof(double));
-    extract_points_from_ring(conn, ext_ring, n_ext_points, rings[0]);
+    extract_points_from_ring(conn, ext_ring, n_ext_points, arr);
+    rings_term[0] = YAP_FloatsToList(arr, n_ext_points*2);
+    free(arr);
     for(int i=1; i<=n_int_rings; i++)
     {
         sprintf(sql, "SELECT ST_InteriorRingN('%s', %d)", geometry, i);
@@ -60,11 +62,12 @@ double** extract_values(PGconn *conn, char* geometry, int n_int_rings)
         sprintf(sql, "SELECT ST_NPoints('%s')", int_ring);
         int n_int_points = atoi(PQgetvalue(exec_sql(conn, sql), 0, 0));
 
-        rings[i] = malloc(n_int_points*2*sizeof(double));
-        extract_points_from_ring(conn, int_ring, n_int_points, rings[i]);
+        arr = malloc(n_int_points*2*sizeof(double));
+        extract_points_from_ring(conn, int_ring, n_int_points, arr);
+        rings_term[i] = YAP_FloatsToList(arr, n_int_points*2);
+        free(arr);
     }
-   
-    return rings;
+    return YAP_MkListFromTerms(rings_term, n_int_rings +1);
 }
 
 /**

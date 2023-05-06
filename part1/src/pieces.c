@@ -27,7 +27,7 @@ int populatePiecesTable(PGconn *conn)
       VALUES('large_right_triangle', 'red', 'POLYGON((0 0, 0.5 0.5, 1 0, 0 0))'), \
              ('large_right_triangle', 'orange', 'POLYGON((0 0, 0.5 0.5, 1 0, 0 0))'), \
              ('medium_right_triangle', 'blue', 'POLYGON((0 0, 0.5 0, 0.5 0.5, 0 0))'), \
-             ('small_right_triangle', 'viola', 'POLYGON((0 0, 0.5 0, 0.25 0.25, 0 0))'), \
+             ('small_right_triangle', 'violet', 'POLYGON((0 0, 0.5 0, 0.25 0.25, 0 0))'), \
              ('small_right_triangle', 'purple', 'POLYGON((0 0, 0.5 0, 0.25 0.25, 0 0))'), \
              ('square', 'yellow', 'POLYGON((0 0, 0.25 0.25, 0.5 0, 0.25 -0.25, 0 0))'), \
              ('parallelogram', 'green', 'POLYGON((0 0, 0.5 0, 0.75 0.25, 0.25 0.25, 0 0))');";

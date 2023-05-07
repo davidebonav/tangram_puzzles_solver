@@ -27,6 +27,44 @@ PGresult* exec_sql(PGconn *conn, char *sql)
     return res;
 }
 
+
+/**
+ * geom: YAP_Term is an array of YAP_Terms, each of it is an array of double
+ * returns: output buffer of size 1024 string of WKT representing the geom
+*/
+char* extract_WKT_from_points(PGconn *conn, YAP_Term geom)
+{
+    // POLYGON((0 0,0.5 0.5,1 0,0 0))
+    char str[1024] = "POLYGON(";
+    char tmp[1024];
+    int lenght = YAP_ListLength(geom);
+    for (int j = 0; j < lenght; j++)
+    {
+        YAP_Term head = YAP_HeadOfTerm(geom); // inside the head there is an array of points that is a ring of the polygon
+        geom = YAP_TailOfTerm(geom);
+        int sub_lenght = YAP_ListLength(head);
+        double *ring = malloc(sub_lenght * sizeof(double));
+        YAP_ListToFloats(head, ring, sub_lenght);
+        if(sub_lenght>0){
+            j == 0 ? strcat(str, "(") : strcat(str, ",(");
+            
+        }
+        for(int i=0; i<sub_lenght-1; i+=2)
+        {
+            i==sub_lenght-2 ? sprintf(tmp, "%f %f", ring[i], ring[i+1]) : sprintf(tmp, "%f %f,", ring[i], ring[i+1]);
+            strcat(str, tmp);
+        }
+        strcat(str, ")");
+        free(ring);
+    }
+    strcat(str, ")");
+    
+    char *res = malloc(1024*sizeof(char));
+    sprintf(res, "%s", str);
+    return res;
+}
+
+
 char* extract_geometry(PGconn *conn, char* origin_value) {
     char cast_query[1024];
     sprintf(cast_query, "select st_astext('%s')", origin_value);
@@ -91,6 +129,5 @@ void extract_points_from_ring(PGconn *conn, char* ring, int n_points, double* po
     }
 
 }
-
 
 #endif

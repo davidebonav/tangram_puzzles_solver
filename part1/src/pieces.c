@@ -30,7 +30,7 @@ int populatePiecesTable(PGconn *conn)
              ('small_right_triangle', 'violet', 'POLYGON((0 0, 0.5 0, 0.25 0.25, 0 0))'), \
              ('small_right_triangle', 'purple', 'POLYGON((0 0, 0.5 0, 0.25 0.25, 0 0))'), \
              ('square', 'yellow', 'POLYGON((0 0, 0.25 0.25, 0.5 0, 0.25 -0.25, 0 0))'), \
-             ('parallelogram', 'green', 'POLYGON((0 0, 0.5 0, 0.75 0.25, 0.25 0.25, 0 0))');";
+             ('parallelogram', 'green', 'POLYGON((0.25 0, 0.75 0, 0.5 0.25, 0 0.25, 0.25 0))');";
   /*
     • 2 large right triangles (hypotenuse 1, sides √2/2, area 1/4)
     • 1 medium right triangle (hypotenuse √2/2, sides 1/2, area 1/8)

@@ -1,4 +1,5 @@
 :- load_foreign_files(['yap2postgres'], [], init_predicates).
+:- load_foreign_files(['prolog_utils'], [], init_predicates).
 %:- consult(sqlcompiler).
 
 %db_open/5.

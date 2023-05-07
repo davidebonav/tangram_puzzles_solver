@@ -30,6 +30,8 @@ static int c_st_difference(void)
     char sql[1024];
     sprintf(sql, "select ST_Difference(ST_GeomFromText('%s'), ST_GeomFromText('%s'))", f1_WKL, f2_WKL);
     PGresult *res = PQexec(conn, sql);
+    free(f1_WKL);
+    free(f2_WKL);
     if (PQresultStatus(res) != PGRES_TUPLES_OK)
     {
         fprintf(stderr, "Error executing query : %s\n", sql);
@@ -58,6 +60,7 @@ static int c_st_rotate(void)
     char sql[1024];
     sprintf(sql, "select ST_Rotate(ST_GeomFromText('%s'), %d)", f1_WKL, rads);
     PGresult *res = PQexec(conn, sql);
+    free(f1_WKL);
     if (PQresultStatus(res) != PGRES_TUPLES_OK)
     {
         fprintf(stderr, "Error executing query : %s\n", sql);

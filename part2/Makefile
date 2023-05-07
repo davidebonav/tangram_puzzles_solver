@@ -11,7 +11,7 @@ C_SRC=$(wildcard ./*.c)
 OBJ=$(subst .c,.o,$(subst ./,./bin/,$(C_SRC)))
 SO_FILE=$(subst .c,.so,$(C_SRC))
 
-all: clean binFolder compile
+all: binFolder compile
 
 binFolder:
 	@ mkdir -p ./bin/

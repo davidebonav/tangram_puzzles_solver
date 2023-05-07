@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+
 def register_geometry_type():
     # https://www.psycopg.org/docs/advanced.html#type-casting-of-sql-types-into-python-objects
     from psycopg2.extensions import new_type, register_type  
@@ -12,21 +14,14 @@ def register_geometry_type():
     geometry_type_name = 'geometry'  # The name of the custom type in PostgreSQL
     geometry_typ = new_type((geometry_type_oid,), geometry_type_name, geometry_converter)
     register_type(geometry_typ)
-    print("tipo registrato")
+    print("Tipo registrato...")
 
 def print_query_answer(cur, rows = None):
     arity = len(cur.description)
 
     out_string = "{: <25} "*arity;
 
-    # Get column names
-    # for desc in cur.description: # description = [psycopg2.extensions.Column]
-        # print(f"(ColName = {desc.name}, Oid = {desc.type_code})\t", end="")
-    # print("")
-    # 
-    # col = [f"(ColName = {desc.name}, Oid = {desc.type_code})" for desc in cur.description]
-    # print(out_string.format(*col))
-
+    # print column names
     col = [f"(ColName = {desc.name}," for desc in cur.description]
     print(out_string.format(*col))
     col = [f" Oid = {desc.type_code})" for desc in cur.description]
@@ -40,3 +35,19 @@ def print_query_answer(cur, rows = None):
         # for i in range(arity):
         #     print(f"{row[i]}\t",end="")
         # print("")
+
+def db_row_to_patch(points, color, id):
+    return plt.Polygon(
+        points, 
+        facecolor=color, 
+        edgecolor='black', 
+        alpha=0.5+id/14
+    )
+
+
+# def reshape_array(arr, nrow, ncol): # array_to_matrix
+#     # Split the array into a matrix
+#     matrix = [[arr[i*ncol + j] for j in range(ncol)] for i in range(nrow)]
+#     return matrix
+
+

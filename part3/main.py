@@ -2,7 +2,7 @@
 
 import psycopg2
 from utils import register_geometry_type
-from pieces_utils import *
+from PiecesTable import *
 
 def main():
     # Establish a connection to the database
@@ -14,8 +14,9 @@ def main():
     )
 
     # print_pieces_table(conn)
-    plot_pieces_table(conn)
-    # tmp5()
+    # plot_pieces_table(conn)
+    puzzle = PiecesTable(conn)
+    puzzle.solve_puzzle()
 
     # Close the connection
     conn.close()

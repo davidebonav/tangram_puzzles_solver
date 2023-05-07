@@ -7,16 +7,26 @@ YAPFLAGS=-I/usr/local/include/Yap
 LDFLAGS=-shared
 LIBS=-lpq
 
-all: clean yap2postgres.so
+C_SRC=$(wildcard ./*.c)
+OBJ=$(subst .c,.o,$(subst ./,./bin/,$(C_SRC)))
+SO_FILE=$(subst .c,.so,$(C_SRC))
 
-yap2postgres.so: yap2postgres.o
-	$(CC) $(LDFLAGS) -o yap2postgres.so yap2postgres.o $(LIBS)
+all: clean binFolder compile
 
-yap2postgres.o: yap2postgres.c
-	$(CC) $(CFLAGS) -o yap2postgres.o yap2postgres.c $(POSTGFLAGS) $(YAPFLAGS)
+binFolder:
+	@ mkdir -p ./bin/
+
+compile: $(SO_FILE)
+
+$(SO_FILE): $(OBJ)
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+$(OBJ): $(C_SRC)
+	$(CC) $(CFLAGS) -o $@ $< $(POSTGFLAGS) $(YAPFLAGS)
 
 clean:
-	rm -f yap2postgres.o yap2postgres.so
+	rm -f *.o *.so
+	@ rm -rf ./bin/
 
 .PHONY: all clean
 

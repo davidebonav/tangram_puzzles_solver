@@ -19,7 +19,7 @@ binFolder:
 compile: $(SO_FILE)
 
 $(SO_FILE): $(OBJ)
-	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+	$(CC) $(LDFLAGS) -o $@ $< $(LIBS)
 
 $(OBJ): $(C_SRC)
 	$(CC) $(CFLAGS) -o $@ $< $(POSTGFLAGS) $(YAPFLAGS)

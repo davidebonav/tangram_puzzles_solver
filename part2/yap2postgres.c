@@ -143,12 +143,18 @@ static int c_db_row_continue(void)
             head = YAP_HeadOfTerm(list);
             list = YAP_TailOfTerm(list);
             value = PQgetvalue(res_set, i, j);
-            // POLYGON oid
             // printf("%s - %d\n", value, PQftype(res_set, j));
-            if(PQftype(res_set, j) == (Oid) GEOM_OID) {
-                value = extract_geometry(conn, value);
+            if(PQftype(res_set, j) == (Oid) POLYG_OID) {
+                char sql[1024];
+                sprintf(sql, "SELECT ST_NumInteriorRings('%s')", value);
+                int n_int_rings = atoi(PQgetvalue(exec_sql(conn, sql), 0, 0)); // num of interior rings, add 1 to get the total amount of rings
+                YAP_Term polygon = extract_values(conn, value, n_int_rings);
+                if (!YAP_Unify(head, polygon))
+                {
+                    return FALSE;
+                }
             } 
-            if (!YAP_Unify(head, YAP_MkAtomTerm(YAP_LookupAtom(value ? value : "NULL"))))
+            else if (!YAP_Unify(head, YAP_MkAtomTerm(YAP_LookupAtom(value ? value : "NULL"))))
             {
                 return FALSE;
             }

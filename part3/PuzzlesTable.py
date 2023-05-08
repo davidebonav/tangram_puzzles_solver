@@ -1,74 +1,69 @@
 #!/usr/bin/python3
 
 from utils import *
+import numpy
 import matplotlib.pyplot as plt
 from shapely.affinity import rotate, translate, scale
 
-class PiecesTable:
+class PuzzlesTable:
 
     # PIECES TABLE COLUMNS NUMBER
     ID = 0
-    PIECE_TYPE = 1
-    COLOR = 2
-    SHAPE = 3
+    PUZZLE_NAME = 1
+    SHAPE = 2
 
     # SQL query
-    select_star = "SELECT * FROM pieces"
+    select_star = "SELECT * FROM puzzles"
 
     def __init__(self, conn):
         self.conn = conn
 
-        cur = PiecesTable.get_records_cur(self.conn)
+        cur = PuzzlesTable.get_records_cur(self.conn)
         self.rows = cur.fetchall()
         cur.close()
     
     @staticmethod
     def get_records_cur(conn):
-        # Create a cursor to execute queries
         cur = conn.cursor()
-        # Execute a query
-        cur.execute(PiecesTable.select_star)
+        cur.execute(PuzzlesTable.select_star)
         return cur
     
     @staticmethod
-    def print_pieces(conn):
-        cur = PiecesTable.get_records_cur(conn)
+    def print_puzzles(conn):
+        cur = PuzzlesTable.get_records_cur(conn)
         print_query_answer(cur)
-
-        # Close the cursor
         cur.close()
 
     @staticmethod
-    def plot_pieces(conn):
-        cur = PiecesTable.get_records_cur(conn)
+    def plot_puzzles(conn):
+        cur = PuzzlesTable.get_records_cur(conn)
         rows = cur.fetchall()
         cur.close()
         ncols=4
         nrows=len(rows)//4+1
 
-        # plt.rcParams["figure.figsize"] = [7.50, 3.50]
         plt.rcParams["figure.autolayout"] = True
 
         fix, axes = plt.subplots(nrows=nrows, ncols=ncols)
+        if isinstance(axes, numpy.ndarray):
+            axes = [axes,[]]
 
         for i in range(nrows):
             for j in range(ncols):
                 if (i*ncols + j) >= len(rows):
-                    break  # Break out of the inner loop
+                    break
                 row = rows[i*ncols + j]
 
                 patch = db_row_to_patch(
-                    list(row[PiecesTable.SHAPE].exterior.coords), 
-                    row[PiecesTable.COLOR],
-                    alpha=0.9)
+                    points=list(row[PuzzlesTable.SHAPE].exterior.coords))
 
                 axes[i][j].clear()
-                axes[i][j].set_title(f"id={row[PiecesTable.ID]}, name={row[PiecesTable.PIECE_TYPE]}")
+                axes[i][j].set_title(f"id={row[PuzzlesTable.ID]}, name={row[PuzzlesTable.PUZZLE_NAME]}")
                 axes[i][j].add_patch(patch)
                 # axes[i][j].autoscale_view()
             
-                axes[i][j].set_xlim(0, 1)
-                axes[i][j].set_ylim(-0.25, 1)
+                axes[i][j].set_xlim(-0.3, 1.3)
+                axes[i][j].set_ylim(-0.1, 1.3)
                 axes[i][j].set_aspect("equal")
 
                 plt.pause(0.01)
@@ -83,13 +78,13 @@ class PiecesTable:
 
         puzzle = {
             'print' : [False for row in self.rows],
-            'colors' : [row[PiecesTable.COLOR] for row in self.rows],
-            'polygons' : [row[PiecesTable.SHAPE] for row in self.rows],
+            'colors' : [row[PuzzlesTable.COLOR] for row in self.rows],
+            'polygons' : [row[PuzzlesTable.SHAPE] for row in self.rows],
             'patches' : [
                 db_row_to_patch(
-                        list(row[PiecesTable.SHAPE].exterior.coords), 
-                        row[PiecesTable.COLOR],
-                        id=row[PiecesTable.ID])
+                        list(row[PuzzlesTable.SHAPE].exterior.coords), 
+                        row[PuzzlesTable.COLOR],
+                        id=row[PuzzlesTable.ID])
                 for row in self.rows
             ]
         }

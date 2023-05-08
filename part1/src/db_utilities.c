@@ -58,7 +58,7 @@ int createTable(PGconn *conn, const char *create_table_sql)
 
 int insertIntoTable(PGconn *conn, const char *insert_sql)
 {
-    printf("Adding pieces into table...\n");
+    printf("Adding records into table...\n");
 
     PGresult *res;
 

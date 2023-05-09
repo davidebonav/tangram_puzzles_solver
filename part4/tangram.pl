@@ -1,9 +1,8 @@
 consult(../part2/yap2postgres).
 init :-  db_open(localhost, postgres, 'gnazio', tangram_puzzle, ConnName),
-            get_value(ConnName, ConnHandler),
-            db_import(pieces, pieces, ConnHandler),
-            db_import(puzzles, puzzles, ConnHandler),
-            db_import(solutions, solutions, ConnHandler).
+            db_import(pieces, pieces, ConnName),
+            db_import(puzzles, puzzles, ConnName),
+            db_import(solutions, solutions, ConnName).
 
 % Predicato per ruotare le coordinate del pezzo
 rotate_piece(PieceCoords, RotatedPieceCoords, ConnHandler) :-
@@ -22,9 +21,9 @@ rotate_and_translate(PieceCoords, TransformedPieceCoords, ConnHandler) :-
     rotate_piece(PieceCoords, RotatedPieceCoords, ConnHandler),
     translate_piece(RotatedPieceCoords, TransformedPieceCoords, ConnHandler).
 
-solve_tangram_helper([], _).
+solve_tangram_helper([], _, conn).
 solve_tangram_helper([Piece|Rest], Goal, ConnHandler) :-
-    pieces(PieceName, PieceColor, PieceCoords),
+    pieces(_, PieceName, PieceColor, PieceCoords),
     rotate_and_translate(PieceCoords, TransformedPieceCoords, ConnHandler),
     member(PieceCoords, TransformedPieceCoords),
     subtract(ConnHandler, Goal, PieceCoords, RemainingGoal),

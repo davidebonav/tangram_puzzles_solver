@@ -46,6 +46,10 @@ class Table(metaclass=abc.ABCMeta):
         if not self.is_matrix(axes):
             axes = [axes,[]]
 
+        # manager = plt.get_current_fig_manager()
+        # manager.full_screen_toggle()
+        fix.set_size_inches(15, 8)
+
         for i in range(nrows):
             for j in range(ncols):
                 if (i*ncols + j) >= len(rows):
@@ -59,10 +63,11 @@ class Table(metaclass=abc.ABCMeta):
                 self.set_ax_xylim(axes[i][j])
                 axes[i][j].set_aspect("equal")
 
-                plt.pause(0.01)
+                plt.pause(0.005)
             else:
                 continue  # Continue the outer loop if the inner loop didn't break
             break  # Break out of the outer loop if the inner loop did break
+
         plt.tight_layout()
         plt.show()
 

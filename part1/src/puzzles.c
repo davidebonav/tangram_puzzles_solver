@@ -7,11 +7,12 @@ const char *create_puzzles_table_sql = "CREATE TABLE IF NOT EXISTS \
           puzzle_name VARCHAR(40), \
           shape GEOMETRY(POLYGON,3763));";
 /* const char *insert_puzzles_sql = "INSERT INTO puzzles(puzzle_name, shape) \
-       VALUES('', '', ''), \
-              ('', '', 'POLYGON((0 0.5,0.25 0.75,0 1,-0.25 1.25,0.25 1.25,0.5 1,0.75 1.25,1.25 1.25,0.75 0.75,1 0.5,0.75 0.25,1 0,0 0,0.25 0.25,0 0.5))'), \
+       VALUES('', 'first_puzzle', 'POLYGON((0.25 0.25,0 0.5,0.25 0.75,-0.25 1.25,0.5 1.25,1.25 1.25,0.75 0.75,1 0.5,0.75 0.25,1 0,0.5 0,0 0,0.25 0.25))'), \
+              ('', 'second_puzzle', 'POLYGON((0 0.5,0.25 0.75,0 1,-0.25 1.25,0.25 1.25,0.5 1,0.75 1.25,1.25 1.25,0.75 0.75,1 0.5,0.75 0.25,1 0,0 0,0.25 0.25,0 0.5))'), \
               ('', '', '');";*/
-const char *insert_puzzles_sql = "INSERT INTO puzzles(puzzle_name, shape) \
-      VALUES('second_puzzle', 'POLYGON((0 0.5,0.25 0.75,0 1,-0.25 1.25,0.25 1.25,0.5 1,0.75 1.25,1.25 1.25,0.75 0.75,1 0.5,0.75 0.25,1 0,0 0,0.25 0.25,0 0.5))');";
+const char *insert_puzzles_sql = "INSERT INTO puzzles(puzzle_name, shape) VALUES\
+      ('first_puzzle', 'POLYGON((0.25 0.25,0 0.5,0.25 0.75,-0.25 1.25,0.5 1.25,1.25 1.25,0.75 0.75,1 0.5,0.75 0.25,1 0,0.5 0,0 0,0.25 0.25))'), \
+      ('second_puzzle', 'POLYGON((0 0.5,0.25 0.75,0 1,-0.25 1.25,0.25 1.25,0.5 1,0.75 1.25,1.25 1.25,0.75 0.75,1 0.5,0.75 0.25,1 0,0 0,0.25 0.25,0 0.5))');";
 const char *select_all_puzzles_sql = "SELECT id, puzzle_name, st_astext(shape) from puzzles";
 const char *select_count_puzzles_sql = "SELECT COUNT(*) from puzzles";
 

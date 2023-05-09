@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
-from Table import *
+from Table import Table
+from utils import db_row_to_patch
 
 class SolutionsTable(Table):
 
@@ -53,6 +54,6 @@ class SolutionsTable(Table):
 
     def set_ax_patches(self,ax,row):
         for i in range(1,len(row)):
-            patch = Table.db_row_to_patch(
+            patch = db_row_to_patch(
                     points=list(row[i].exterior.coords), color=self.colors[i-1])
             ax.add_patch(patch)

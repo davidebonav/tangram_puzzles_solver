@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from Table import Table
+from utils import db_row_to_patch
 
 class PuzzlesTable(Table):
 
@@ -21,7 +22,7 @@ class PuzzlesTable(Table):
         ax.set_title(f"id={row[PuzzlesTable.ID]}, name={row[PuzzlesTable.PUZZLE_NAME]}")
 
     def set_ax_patches(self,ax,row):
-        patch = Table.db_row_to_patch(
+        patch = db_row_to_patch(
                     points=list(row[PuzzlesTable.SHAPE].exterior.coords))
         ax.add_patch(patch)
 

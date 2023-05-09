@@ -36,6 +36,14 @@ def print_query_answer(cur, rows = None):
         #     print(f"{row[i]}\t",end="")
         # print("")
 
+def db_row_to_patch(points, color='gray', id=None,alpha=0.9):
+        alpha = 0.5+id/14 if alpha==None else alpha
+        return plt.Polygon(
+            points, 
+            facecolor=color, 
+            edgecolor='black', 
+            alpha=alpha
+        )
 
 # def reshape_array(arr, nrow, ncol): # array_to_matrix
 #     # Split the array into a matrix

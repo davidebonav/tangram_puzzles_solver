@@ -72,16 +72,6 @@ class Table(metaclass=abc.ABCMeta):
         plt.show()
 
     @staticmethod
-    def db_row_to_patch(points, color='gray', id=None,alpha=0.9):
-        alpha = 0.5+id/14 if alpha==None else alpha
-        return plt.Polygon(
-            points, 
-            facecolor=color, 
-            edgecolor='black', 
-            alpha=alpha
-        )
-
-    @staticmethod
     @abc.abstractmethod
     def set_ax_title(ax,row):
         pass

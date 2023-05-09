@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from Table import Table
+from utils import db_row_to_patch
 
 class PiecesTable(Table):
 
@@ -22,7 +23,7 @@ class PiecesTable(Table):
         ax.set_title(f"id={row[PiecesTable.ID]}, name={row[PiecesTable.PIECE_TYPE]}")
 
     def set_ax_patches(self,ax,row):
-        patch = Table.db_row_to_patch(
+        patch = db_row_to_patch(
                     list(row[PiecesTable.SHAPE].exterior.coords), 
                     row[PiecesTable.COLOR],
                     alpha=0.9)

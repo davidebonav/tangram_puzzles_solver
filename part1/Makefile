@@ -38,8 +38,12 @@ $(PROJ_NAME): $(OBJ)
 	$(CC) $(CC_FLAGS) $< -o $@
 	@ echo ' '
 
-reset_db:
+hard_reset_db:
 	@ ./script/create_user_and_db.sh
+	@ echo "Reset successful"
+
+soft_reset_db:
+	@ ./script/soft_reset.sh
 	@ echo "Reset successful"
 
 binFolder:
@@ -49,4 +53,4 @@ clean:
 	@ rm -rf ./$(BIN_DIR)/*.o $(PROJ_NAME) *~
 	@ rm -rf $(BIN_DIR)
 
-.PHONY: all clean reset_db
+.PHONY: all clean soft_reset_db hard_reset_db

@@ -17,9 +17,9 @@ const char *create_pieces_table_sql = "CREATE TABLE IF NOT EXISTS \
 const char *insert_pieces_sql = "INSERT INTO pieces(piece_type, color, shape) \
       VALUES('large_right_triangle', 'red', 'POLYGON((0 0, 0.5 0.5, 1 0, 0 0))'), \
              ('large_right_triangle', 'orange', 'POLYGON((0 0, 0.5 0.5, 1 0, 0 0))'), \
-             ('medium_right_triangle', 'blue', 'POLYGON((0 0, 0.5 0, 0.5 0.5, 0 0))'), \
-             ('small_right_triangle', 'violet', 'POLYGON((0 0, 0.5 0, 0.25 0.25, 0 0))'), \
-             ('small_right_triangle', 'purple', 'POLYGON((0 0, 0.5 0, 0.25 0.25, 0 0))'), \
+             ('medium_right_triangle', 'cyan', 'POLYGON((0 0, 0.5 0, 0.5 0.5, 0 0))'), \
+             ('small_right_triangle', 'fuchsia', 'POLYGON((0 0, 0.5 0, 0.25 0.25, 0 0))'), \
+             ('small_right_triangle', 'indigo', 'POLYGON((0 0, 0.5 0, 0.25 0.25, 0 0))'), \
              ('square', 'yellow', 'POLYGON((0 0, 0.25 0.25, 0.5 0, 0.25 -0.25, 0 0))'), \
              ('parallelogram', 'green', 'POLYGON((0.25 0, 0.75 0, 0.5 0.25, 0 0.25, 0.25 0))');";
 const char *select_all_pieces_sql = "SELECT id,piece_type, color, st_astext(shape) from pieces";

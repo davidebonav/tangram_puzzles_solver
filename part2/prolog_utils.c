@@ -17,7 +17,7 @@ void init_predicates()
 /**
  * TEST st_difference -> consult(yap2postgres),db_open(localhost, postgres, 'gnazio', tangram_puzzle, conn),get_value(conn, ConnHandler),st_difference(ConnHandler, [[0.0000000000000000,0.0000000000000000,0.5000000000000000,0.5000000000000000,1.0000000000000000,0.0000000000000000,0.0000000000000000,0.0000000000000000]], [[0.0000000000000000,0.0000000000000000,0.5000000000000000,0.0000000000000000,0.2500000000000000,0.2500000000000000,0.0000000000000000,0.0000000000000000]], A).
  * TEST st_rotate -> consult(yap2postgres),db_open(localhost, postgres, 'gnazio', tangram_puzzle, conn),get_value(conn, ConnHandler),st_rotate(ConnHandler, [[0.0000000000000000,0.0000000000000000,0.5000000000000000,0.5000000000000000,1.0000000000000000,0.0000000000000000,0.0000000000000000,0.0000000000000000]], 90, RES).
- * TEST st_translate -> consult(yap2postgres),db_open(localhost, postgres, 'gnazio', tangram_puzzle, conn),get_value(conn, ConnHandler),st_translate(ConnHandler, [[0.0000000000000000,0.0000000000000000,0.5000000000000000,0.5000000000000000,1.0000000000000000,0.0000000000000000,0.0000000000000000,0.0000000000000000]], 10, 5, RES).
+ * TEST st_translate -> consult(yap2postgres),db_open(localhost, postgres, 'gnazio', tangram_puzzle, conn),get_value(conn, ConnHandler),st_translate(ConnHandler, [[0.0000000000000000,0.0000000000000000,0.5000000000000000,0.5000000000000000,1.0000000000000000,0.0000000000000000,0.0000000000000000,0.0000000000000000]], 0.25, 0.25, RES).
 */
 
 // st_difference(conn, geom1, geom2, res).
@@ -80,19 +80,20 @@ static int c_st_rotate(void)
     return TRUE;
 }
 
-// st_rotate(conn, geom1, deltaX, deltaY, res).
-// TODO da testare
+// st_translate(conn, geom1, deltaX, deltaY, res).
 static int c_st_translate(void) 
 {
     PGconn *conn = (PGconn *)YAP_IntOfTerm(YAP_ARG1);
     YAP_Term f1 = YAP_ARG2;
-    int deltaX = YAP_IntOfTerm(YAP_ARG3);
-    int deltaY = YAP_IntOfTerm(YAP_ARG4);
+    // int deltaX = YAP_IntOfTerm(YAP_ARG3);
+    float deltaX = YAP_FloatOfTerm(YAP_ARG3);
+    // int deltaY = YAP_IntOfTerm(YAP_ARG4);
+    float deltaY = YAP_FloatOfTerm(YAP_ARG4);
     YAP_Term res = YAP_ARG5;
 
     char *f1_WKL = extract_WKT_from_points(conn, f1);
     char sql[1024];
-    sprintf(sql, "select ST_Translate(ST_GeomFromText('%s'), %d, %d)", f1_WKL, deltaX, deltaY);
+    sprintf(sql, "select ST_Translate(ST_GeomFromText('%s'), %f, %f)", f1_WKL, deltaX, deltaY);
     PGresult *query_res = PQexec(conn, sql);
     free(f1_WKL);
     if (PQresultStatus(query_res) != PGRES_TUPLES_OK)
@@ -101,6 +102,7 @@ static int c_st_translate(void)
         finish_with_error(conn, query_res);
     }
     char *res_str = PQgetvalue(query_res, 0, 0);
+  
     sprintf(sql, "SELECT ST_NumInteriorRings('%s')", res_str);
     int n_int_rings = atoi(PQgetvalue(exec_sql(conn, sql), 0, 0)); // num of interior rings, add 1 to get the total amount of rings
     YAP_Term res_term = extract_values(conn, res_str,n_int_rings);

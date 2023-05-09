@@ -30,7 +30,7 @@ PGresult* exec_sql(PGconn *conn, char *sql)
 
 /**
  * geom: YAP_Term is an array of YAP_Terms, each of it is an array of double
- * returns: output buffer of size 1024 string of WKT representing the geom
+ * returns: output buffer of size 1024 string of WKT representing the POLYGON
 */
 char* extract_WKT_from_points(PGconn *conn, YAP_Term geom)
 {

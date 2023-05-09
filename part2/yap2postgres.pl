@@ -33,4 +33,10 @@ db_import(RelationName, PredName, ConnName) :-
     ).
 
 
-% to test db import -> get_value(conn, ConnHandler), db_query(ConnHandler, 'select * from pieces', ResultSet), db_row(ResultSet, [A,B,C,D], ConnHandler).
+% to test db import PIECES -> get_value(conn, ConnHandler), db_query(ConnHandler, 'select * from pieces', ResultSet), db_row(ResultSet, [A,B,C,D], ConnHandler).
+% to test db import SOLUTIONS -> get_value(conn, ConnHandler), db_query(ConnHandler, 'select * from solutions', ResultSet), db_row(ResultSet, [A,B,C], ConnHandler).
+% to test db import PUZZLES -> consult(yap2postgres), db_open(localhost, postgres, 'gnazio', tangram_puzzle, conn), get_value(conn, ConnHandler), db_query(ConnHandler, 'select * from puzzles', ResultSet), db_row(ResultSet, [A,B, C], ConnHandler).
+% db_import(puzzles, puzzles, conn).
+% db_import(solutions, solutions, conn).
+% p(A, B).
+% solutions(A, B, C).

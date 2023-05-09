@@ -3,6 +3,8 @@
 import psycopg2
 from utils import register_geometry_type
 from PiecesTable import *
+from PuzzlesTable import *
+from SolutionsTable import *
 
 def main():
     # Establish a connection to the database
@@ -13,10 +15,22 @@ def main():
         password="davide"
     )
 
-    # print_pieces_table(conn)
-    # plot_pieces_table(conn)
-    puzzle = PiecesTable(conn)
-    puzzle.solve_puzzle()
+    # print("Pieces table: ")
+    # PiecesTable.print_table(conn)
+    # print("\n\nPuzzles table:")
+    # PuzzlesTable.print_table(conn)
+    # print("\n\nSolutions table:")
+    # SolutionsTable.print_table(conn)
+
+    pieces = PiecesTable(conn)
+    pieces.plot_table()
+    puzzles = PuzzlesTable(conn)
+    puzzles.plot_table()
+    solutions = SolutionsTable(conn)
+    solutions.plot_table()
+
+    # puzzle = PiecesTable(conn)
+    # puzzle.solve_puzzle()
 
     # Close the connection
     conn.close()

@@ -10,7 +10,7 @@ def register_geometry_type():
         return wkb.loads(value, hex=True) # return MyCustomType(value)
     
     # Register the custom type
-    geometry_type_oid = 40753  # Choose a type code that is not used by any built-in PostgreSQL data type
+    geometry_type_oid = 46115  # Choose a type code that is not used by any built-in PostgreSQL data type
     geometry_type_name = 'geometry'  # The name of the custom type in PostgreSQL
     geometry_typ = new_type((geometry_type_oid,), geometry_type_name, geometry_converter)
     register_type(geometry_typ)
@@ -35,14 +35,6 @@ def print_query_answer(cur, rows = None):
         # for i in range(arity):
         #     print(f"{row[i]}\t",end="")
         # print("")
-
-def db_row_to_patch(points, color, id):
-    return plt.Polygon(
-        points, 
-        facecolor=color, 
-        edgecolor='black', 
-        alpha=0.5+id/14
-    )
 
 
 # def reshape_array(arr, nrow, ncol): # array_to_matrix

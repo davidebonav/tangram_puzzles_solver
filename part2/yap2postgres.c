@@ -1,6 +1,6 @@
 #include "Yap/YapInterface.h"
 #include <libpq-fe.h>
-#include "utils.h"
+#include "PostGIS_utils.h"
 
 void init_predicates();
 
@@ -21,7 +21,6 @@ typedef struct
 
 c_db_row_type *c_db_row_data;
 
-
 void init_predicates()
 {
     YAP_UserCPredicate("db_connect", c_db_connect, 5);
@@ -32,8 +31,6 @@ void init_predicates()
 
     YAP_UserCPredicate("db_arity", c_db_arity, 3);
 }
-
-
 
 static int c_db_connect(void)
 {
@@ -131,7 +128,7 @@ static int c_db_row_continue(void)
     i = YAP_IntOfTerm(c_db_row_data->current_row);
 
     res_set = (PGresult *)YAP_IntOfTerm(YAP_ARG1);
-    
+
     arity = PQnfields(res_set);
     n_rows = PQntuples(res_set);
 
@@ -144,21 +141,24 @@ static int c_db_row_continue(void)
             list = YAP_TailOfTerm(list);
             value = PQgetvalue(res_set, i, j);
             // printf("%s - %d\n", value, PQftype(res_set, j));
-            if(PQftype(res_set, j) == (Oid) POLYG_OID) {
-                char sql[1024];
-                sprintf(sql, "SELECT ST_NumInteriorRings('%s')", value);
-                int n_int_rings = atoi(PQgetvalue(exec_sql(conn, sql), 0, 0)); // num of interior rings, add 1 to get the total amount of rings
-                YAP_Term polygon = extract_values(conn, value, n_int_rings);
-                if (!YAP_Unify(head, polygon))
-                {
-                    return FALSE;
-                }
-            } 
-            else if (!YAP_Unify(head, YAP_MkAtomTerm(YAP_LookupAtom(value ? value : "NULL"))))
+
+            YAP_Term out_term;
+            if (PQftype(res_set, j) == (Oid)POLYG_OID)
+            {
+                int n_int_rings = atoi(execute_PostGIS_function(conn, "ST_NumInteriorRings", value));
+                out_term = extract_values(conn, value, n_int_rings);
+            }
+            else
+            {
+                out_term = YAP_MkAtomTerm(YAP_LookupAtom(value ? value : "NULL"));
+            }
+
+            if (!YAP_Unify(head, out_term))
             {
                 return FALSE;
             }
         }
+
         c_db_row_data->current_row = YAP_MkIntTerm(i + 1);
         return TRUE;
     }

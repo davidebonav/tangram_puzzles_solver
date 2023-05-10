@@ -126,6 +126,7 @@ static int c_db_row_continue(void)
 
     YAP_PRESERVED_DATA(c_db_row_data, c_db_row_type);
     i = YAP_IntOfTerm(c_db_row_data->current_row);
+    c_db_row_data->current_row = YAP_MkIntTerm(i + 1);
 
     res_set = (PGresult *)YAP_IntOfTerm(YAP_ARG1);
 
@@ -158,8 +159,6 @@ static int c_db_row_continue(void)
                 return FALSE;
             }
         }
-
-        c_db_row_data->current_row = YAP_MkIntTerm(i + 1);
         return TRUE;
     }
 

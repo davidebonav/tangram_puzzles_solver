@@ -9,5 +9,6 @@
 
 YAP_Term extract_values(PGconn *conn, char* geometry, int n_int_rings);
 char *execute_PostGIS_function(PGconn *conn, char *function_name, char *geometry);
+char* extract_WKT_from_points(PGconn *conn, YAP_Term points_list);
 
 #endif

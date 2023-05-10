@@ -1,5 +1,4 @@
 :- load_foreign_files(['yap2postgres'], [], init_predicates).
-%:- consult(sqlcompiler).
 
 %db_open/5.
 %db_close/1.

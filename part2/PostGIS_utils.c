@@ -49,6 +49,34 @@ char *executeN_PostGIS_function(PGconn *conn, char *function_name, char *geometr
     return output;
 }
 
+char *executeS_PostGIS_function(PGconn *conn, char *function_name, char *geometry1, char *geometry2)
+{
+    char sql[1024];
+    PGresult *result_set;
+    char *output;
+
+    sprintf(sql, "SELECT %s('%s', '%s')", function_name, geometry1, geometry2);
+
+    result_set = exec_sql(conn, sql);
+    output = PQgetvalue(result_set, 0, 0);
+    PQclear(result_set);
+    return output;
+}
+
+char *executeFF_PostGIS_function(PGconn *conn, char *function_name, char *geometry1, float x, float y)
+{
+    char sql[1024];
+    PGresult *result_set;
+    char *output;
+
+    sprintf(sql, "SELECT %s('%s', %f, %f)", function_name, geometry1, x, y);
+
+    result_set = exec_sql(conn, sql);
+    output = PQgetvalue(result_set, 0, 0);
+    PQclear(result_set);
+    return output;
+}
+
 /**
  * points[] array has n_points*2 size
  */
@@ -127,7 +155,7 @@ void create_WKT_points_string(YAP_Term points_list, char *WKT_string)
     }
     else
     {
-        int lenght = YAP_ListLength(geom);
+        int lenght = YAP_ListLength(points_list);
 
         strcat(WKT_string, "(");
         for (int i = 0; i < lenght; i++)

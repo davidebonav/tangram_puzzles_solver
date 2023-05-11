@@ -24,14 +24,15 @@ PGresult *exec_sql(PGconn *conn, char *sql)
 char *execute_PostGIS_function(PGconn *conn, char *function_name, char *geometry)
 {
     char sql[1024];
-    PGresult *result_set;
+    static PGresult *result_set;
+    PGresult *oldResult = result_set;
     char *output;
 
     sprintf(sql, "SELECT %s('%s')", function_name, geometry);
 
     result_set = exec_sql(conn, sql);
     output = PQgetvalue(result_set, 0, 0);
-    PQclear(result_set);
+    PQclear(oldResult);
     return output;
 }
 
@@ -125,27 +126,29 @@ YAP_Term extract_values(PGconn *conn, char *geometry, int n_int_rings)
  */
 char *extract_WKT_from_points(YAP_Term points_list)
 {
-
     // POLYGON((0 0,0.5 0.5,1 0,0 0))
-    char str[1024] = "POLYGON(";
+    char str[1024];
+
+    memset(str, 0, sizeof(str));
+    strcpy(str, "POLYGON");
+
     create_WKT_points_string(points_list, str);
-    strcat(str, ")");
 
     char *WKT_string = malloc(1024 * sizeof(char));
     strcpy(WKT_string, str);
+
     return WKT_string;
 }
 
 void create_WKT_points_string(YAP_Term points_list, char *WKT_string)
 {
     char buffer[1024];
-    YAP_Term head, list = points_list;
+    YAP_Term head = YAP_HeadOfTerm(points_list),
+             list = YAP_TailOfTerm(points_list);
+    int lenght = YAP_ListLength(points_list);
 
-    if (YAP_IsPairTerm(points_list))
+    if (lenght == -1 && YAP_IsFloatTerm(head) && YAP_IsFloatTerm(list))
     {
-        head = YAP_HeadOfTerm(list);
-        list = YAP_TailOfTerm(list);
-
         float x, y;
         x = YAP_FloatOfTerm(head);
         y = YAP_FloatOfTerm(list);
@@ -155,18 +158,17 @@ void create_WKT_points_string(YAP_Term points_list, char *WKT_string)
     }
     else
     {
-        int lenght = YAP_ListLength(points_list);
-
         strcat(WKT_string, "(");
         for (int i = 0; i < lenght; i++)
         {
-            head = YAP_HeadOfTerm(list);
-            list = YAP_TailOfTerm(list);
+            create_WKT_points_string(head, WKT_string);
 
-            create_WKT_points_string(list, WKT_string);
-
-            if(i!=lenght-1){
+            if (i != lenght - 1)
+            {
                 strcat(WKT_string, ",");
+
+                head = YAP_HeadOfTerm(list);
+                list = YAP_TailOfTerm(list);
             }
         }
         strcat(WKT_string, ")");

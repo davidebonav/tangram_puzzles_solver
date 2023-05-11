@@ -6,14 +6,14 @@ void init_predicates();
 static int c_st_rotate(void);
 static int c_st_difference(void);
 static int c_st_translate(void);
-static int yap_predicate_to_WTK(void);
+static int c_yap_predicate_to_WKT(void);
 
 void init_predicates()
 {
     YAP_UserCPredicate("st_difference", c_st_difference, 4);
     YAP_UserCPredicate("st_rotate", c_st_rotate, 4);
     YAP_UserCPredicate("st_translate", c_st_translate, 4);
-    YAP_UserCPredicate("yap_predicate_to_WTK", yap_predicate_to_WTK, 2);
+    YAP_UserCPredicate("yap_predicate_to_WKT", c_yap_predicate_to_WKT, 2);
 }
 
 /**
@@ -116,8 +116,8 @@ static int c_st_translate(void)
     return TRUE;
 }
 
-// yap_predicate_to_WTK(YapPointsList, WTKString).
-static int yap_predicate_to_WTK(void)
+// yap_predicate_to_WKT(YapPointsList, WKTString).
+static int c_yap_predicate_to_WKT(void)
 {
     YAP_Term points_list_yap = YAP_ARG1;
     YAP_Term result = YAP_ARG2;

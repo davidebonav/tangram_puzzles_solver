@@ -4,9 +4,9 @@
 %geom_rotation/4.
 %geom_translation/4.
 %geom_translation/5.
-%yap_predicate_to_WTK/2.
+%yap_predicate_to_WKT/2.
 
-% yap_predicate_to_WTK(YapPointsList, WTKString).
+% yap_predicate_to_WKT(YapPointsList, WKTString).
 
 % DIFFERENCE
 geom_difference(ConnName, Geometry1, Geometry2, DifferenceGeometry) :- 

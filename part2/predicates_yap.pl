@@ -16,12 +16,12 @@ geom_difference(ConnName, Geometry1, Geometry2, DifferenceGeometry) :-
 % ROTATION
 geom_rotation(ConnName, Geometry, RadiantsAngleRotation, RotatedGeometry) :- 
     get_value(ConnName, ConnHandler),
-    st_difference(ConnHandler, Geometry, RadiantsAngleRotation, RotatedGeometry).
+    st_rotate(ConnHandler, Geometry, RadiantsAngleRotation, RotatedGeometry).
 
 % TRANSLATION
-geom_rotation(ConnName, Geometry, (DeltaX, DeltaY), TranslatedGeometry) :- 
+geom_translation(ConnName, Geometry, (DeltaX, DeltaY), TranslatedGeometry) :- 
     get_value(ConnName, ConnHandler),
-    st_difference(ConnHandler, Geometry, (DeltaX, DeltaY), TranslatedGeometry).
+    st_translate(ConnHandler, Geometry, [DeltaX|DeltaY], TranslatedGeometry).
 
-geom_rotation(ConnName, Geometry, DeltaX, DeltaY, TranslatedGeometry) :-
-    geom_rotation(ConnName, Geometry, (DeltaX, DeltaY), TranslatedGeometry).
+geom_translation(ConnName, Geometry, DeltaX, DeltaY, TranslatedGeometry) :-
+    st_translate(ConnName, Geometry, (DeltaX, DeltaY), TranslatedGeometry).

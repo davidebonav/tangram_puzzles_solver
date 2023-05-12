@@ -146,8 +146,9 @@ static int c_db_row_continue(void)
             YAP_Term out_term;
             if (PQftype(res_set, j) == (Oid)POLYG_OID)
             {
-                int n_int_rings = atoi(execute_PostGIS_function(conn, "ST_NumInteriorRings", value));
-                out_term = extract_values(conn, value, n_int_rings);
+                char n_int_rings[16];
+                execute_PostGIS_function(conn, "ST_NumInteriorRings", value, n_int_rings); 
+                out_term = extract_values(conn, value, atoi(n_int_rings));
             }
             else
             {

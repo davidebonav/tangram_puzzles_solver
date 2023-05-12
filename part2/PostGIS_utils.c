@@ -21,61 +21,69 @@ PGresult *exec_sql(PGconn *conn, char *sql)
     return res;
 }
 
-char *execute_PostGIS_function(PGconn *conn, char *function_name, char *geometry)
+void execute_PostGIS_function(PGconn *conn, char *function_name, char *geometry, char* output)
 {
     char sql[1024];
-    static PGresult *result_set;
-    PGresult *oldResult = result_set;
-    char *output;
+    PGresult *result_set;
 
     sprintf(sql, "SELECT %s('%s')", function_name, geometry);
 
     result_set = exec_sql(conn, sql);
-    output = PQgetvalue(result_set, 0, 0);
-    PQclear(oldResult);
-    return output;
+    strcpy(output, PQgetvalue(result_set, 0, 0));
+    PQclear(result_set);
+    // printf("-> %s\t%s", sql, output);
 }
 
-char *executeN_PostGIS_function(PGconn *conn, char *function_name, char *geometry, int n)
+void executeN_PostGIS_function(PGconn *conn, char *function_name, char *geometry, int n, char* output)
 {
     char sql[1024];
     PGresult *result_set;
-    char *output;
 
     sprintf(sql, "SELECT %s('%s', %d)", function_name, geometry, n);
 
     result_set = exec_sql(conn, sql);
-    output = PQgetvalue(result_set, 0, 0);
+    strcpy(output,PQgetvalue(result_set, 0, 0));
     PQclear(result_set);
-    return output;
+    // printf("-> %s\t%s", sql, output);
 }
 
-char *executeS_PostGIS_function(PGconn *conn, char *function_name, char *geometry1, char *geometry2)
+void executeD_PostGIS_function(PGconn *conn, char *function_name, char *geometry, double d, char* output)
 {
     char sql[1024];
     PGresult *result_set;
-    char *output;
+
+    sprintf(sql, "SELECT %s('%s', %f)", function_name, geometry, d);
+
+    result_set = exec_sql(conn, sql);
+    strcpy(output,PQgetvalue(result_set, 0, 0));
+    PQclear(result_set);
+    // printf("-> %s\t%s", sql, output);
+}
+
+void executeS_PostGIS_function(PGconn *conn, char *function_name, char *geometry1, char *geometry2, char* output)
+{
+    char sql[1024];
+    PGresult *result_set;
 
     sprintf(sql, "SELECT %s('%s', '%s')", function_name, geometry1, geometry2);
 
     result_set = exec_sql(conn, sql);
-    output = PQgetvalue(result_set, 0, 0);
+    strcpy(output,PQgetvalue(result_set, 0, 0));
     PQclear(result_set);
-    return output;
+    // printf("-> %s\t%s", sql, output);
 }
 
-char *executeFF_PostGIS_function(PGconn *conn, char *function_name, char *geometry1, float x, float y)
+void executeFF_PostGIS_function(PGconn *conn, char *function_name, char *geometry1, double x, double y, char* output)
 {
     char sql[1024];
     PGresult *result_set;
-    char *output;
 
     sprintf(sql, "SELECT %s('%s', %f, %f)", function_name, geometry1, x, y);
 
     result_set = exec_sql(conn, sql);
-    output = PQgetvalue(result_set, 0, 0);
+    strcpy(output,PQgetvalue(result_set, 0, 0));
     PQclear(result_set);
-    return output;
+    // printf("-> %s\t%s", sql, output);
 }
 
 /**
@@ -86,12 +94,14 @@ YAP_Term extract_points_from_ring(PGconn *conn, char *ring, int n_points)
     YAP_Term point_array[n_points];
     for (int i = 1; i <= n_points; i++)
     {
-        char *point;
+        char point[1024], xy[1024];
 
-        point = executeN_PostGIS_function(conn, "ST_PointN", ring, i);
+        executeN_PostGIS_function(conn, "ST_PointN", ring, i, point);
 
-        YAP_Term head = YAP_MkFloatTerm(atof(execute_PostGIS_function(conn, "ST_X", point)));
-        YAP_Term tail = YAP_MkFloatTerm(atof(execute_PostGIS_function(conn, "ST_Y", point)));
+        execute_PostGIS_function(conn, "ST_X", point, xy);
+        YAP_Term head = YAP_MkFloatTerm(atof(xy));
+        execute_PostGIS_function(conn, "ST_Y", point, xy);
+        YAP_Term tail = YAP_MkFloatTerm(atof(xy));
 
         point_array[i - 1] = YAP_MkPairTerm(head, tail);
     }
@@ -102,17 +112,19 @@ YAP_Term extract_points_from_ring(PGconn *conn, char *ring, int n_points)
 YAP_Term extract_values(PGconn *conn, char *geometry, int n_int_rings)
 {
     YAP_Term rings_term[n_int_rings + 1];
-    char geom[1024];
+    char ext_ring[1024], n_ext_points[16];
 
-    char *ext_ring = execute_PostGIS_function(conn, "ST_ExteriorRing", geometry);
-    strcpy(geom, ext_ring);
-    int n_ext_points = atoi(execute_PostGIS_function(conn, "ST_NPoints", geom));
-    rings_term[0] = extract_points_from_ring(conn, geom, n_ext_points);
+    execute_PostGIS_function(conn, "ST_ExteriorRing", geometry, ext_ring);
+    execute_PostGIS_function(conn, "ST_NPoints", ext_ring, n_ext_points);
+    rings_term[0] = extract_points_from_ring(conn, ext_ring, atoi(n_ext_points));
 
     for (int i = 1; i <= n_int_rings; i++)
     {
-        char *int_ring = executeN_PostGIS_function(conn, "ST_InteriorRingN", geometry, i);
-        int n_int_points = atoi(execute_PostGIS_function(conn, "ST_NPoints", int_ring));
+        char int_ring[1024], n_int_points_char[16];
+        
+        executeN_PostGIS_function(conn, "ST_InteriorRingN", geometry, i, int_ring);
+        execute_PostGIS_function(conn, "ST_NPoints", int_ring, n_int_points_char);
+        int n_int_points = atoi(n_int_points_char);
         rings_term[i] = extract_points_from_ring(conn, int_ring, n_int_points);
     }
 

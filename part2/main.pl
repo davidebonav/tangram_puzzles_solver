@@ -5,3 +5,21 @@
 :- db_import(pieces, pieces, conn).
 :- db_import(puzzles, puzzles, conn).
 :- db_import(solutions, solutions, conn).
+
+% Try
+try_print(A) :-
+    pieces(_,_,_,Shape), %yap_predicate_to_WKT(Shape, A).
+    yap_predicate_to_WKT(Shape, A).
+
+try_transalte(A) :-
+    pieces(_,_,_,Shape), %yap_predicate_to_WKT(Shape, A).
+    geom_translation(conn, Shape, (1.0, 1.0), A).
+
+try_rotate(A, Shape) :-
+    pieces(_,_,_,Shape),
+    geom_rotation(conn, Shape, 90.0, A).
+
+try_diff(A, Shape1, Shape2, B) :-
+    pieces('1',_,_,Shape1),
+    pieces(B,_,_,Shape2),
+    geom_difference(conn, Shape1, Shape2, A).

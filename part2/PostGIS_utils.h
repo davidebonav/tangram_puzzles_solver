@@ -15,6 +15,6 @@ void executeFF_PostGIS_function(PGconn *conn, char *function_name, char *geometr
 YAP_Term extract_points_from_ring(PGconn *conn, char *ring, int n_points);
 YAP_Term extract_values(PGconn *conn, char *geometry, int n_int_rings);
 char *extract_WKT_from_points(YAP_Term points_list);
-void create_WKT_points_string(YAP_Term points_list, char *WKT_string);
+bool create_WKT_points_string(YAP_Term points_list, char *WKT_string);
 
 #endif

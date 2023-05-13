@@ -21,7 +21,7 @@ PGresult *exec_sql(PGconn *conn, char *sql)
     return res;
 }
 
-void execute_PostGIS_function(PGconn *conn, char *function_name, char *geometry, char* output)
+void execute_PostGIS_function(PGconn *conn, char *function_name, char *geometry, char *output)
 {
     char sql[1024];
     PGresult *result_set;
@@ -34,7 +34,7 @@ void execute_PostGIS_function(PGconn *conn, char *function_name, char *geometry,
     // printf("-> %s\t%s", sql, output);
 }
 
-void executeN_PostGIS_function(PGconn *conn, char *function_name, char *geometry, int n, char* output)
+void executeN_PostGIS_function(PGconn *conn, char *function_name, char *geometry, int n, char *output)
 {
     char sql[1024];
     PGresult *result_set;
@@ -42,12 +42,12 @@ void executeN_PostGIS_function(PGconn *conn, char *function_name, char *geometry
     sprintf(sql, "SELECT %s('%s', %d)", function_name, geometry, n);
 
     result_set = exec_sql(conn, sql);
-    strcpy(output,PQgetvalue(result_set, 0, 0));
+    strcpy(output, PQgetvalue(result_set, 0, 0));
     PQclear(result_set);
     // printf("-> %s\t%s", sql, output);
 }
 
-void executeD_PostGIS_function(PGconn *conn, char *function_name, char *geometry, double d, char* output)
+void executeD_PostGIS_function(PGconn *conn, char *function_name, char *geometry, double d, char *output)
 {
     char sql[1024];
     PGresult *result_set;
@@ -55,12 +55,12 @@ void executeD_PostGIS_function(PGconn *conn, char *function_name, char *geometry
     sprintf(sql, "SELECT %s('%s', %f)", function_name, geometry, d);
 
     result_set = exec_sql(conn, sql);
-    strcpy(output,PQgetvalue(result_set, 0, 0));
+    strcpy(output, PQgetvalue(result_set, 0, 0));
     PQclear(result_set);
     // printf("-> %s\t%s", sql, output);
 }
 
-void executeS_PostGIS_function(PGconn *conn, char *function_name, char *geometry1, char *geometry2, char* output)
+void executeS_PostGIS_function(PGconn *conn, char *function_name, char *geometry1, char *geometry2, char *output)
 {
     char sql[1024];
     PGresult *result_set;
@@ -68,12 +68,12 @@ void executeS_PostGIS_function(PGconn *conn, char *function_name, char *geometry
     sprintf(sql, "SELECT %s('%s', '%s')", function_name, geometry1, geometry2);
 
     result_set = exec_sql(conn, sql);
-    strcpy(output,PQgetvalue(result_set, 0, 0));
+    strcpy(output, PQgetvalue(result_set, 0, 0));
     PQclear(result_set);
     // printf("-> %s\t%s", sql, output);
 }
 
-void executeFF_PostGIS_function(PGconn *conn, char *function_name, char *geometry1, double x, double y, char* output)
+void executeFF_PostGIS_function(PGconn *conn, char *function_name, char *geometry1, double x, double y, char *output)
 {
     char sql[1024];
     PGresult *result_set;
@@ -81,7 +81,7 @@ void executeFF_PostGIS_function(PGconn *conn, char *function_name, char *geometr
     sprintf(sql, "SELECT %s('%s', %f, %f)", function_name, geometry1, x, y);
 
     result_set = exec_sql(conn, sql);
-    strcpy(output,PQgetvalue(result_set, 0, 0));
+    strcpy(output, PQgetvalue(result_set, 0, 0));
     PQclear(result_set);
     // printf("-> %s\t%s", sql, output);
 }
@@ -121,7 +121,7 @@ YAP_Term extract_values(PGconn *conn, char *geometry, int n_int_rings)
     for (int i = 1; i <= n_int_rings; i++)
     {
         char int_ring[1024], n_int_points_char[16];
-        
+
         executeN_PostGIS_function(conn, "ST_InteriorRingN", geometry, i, int_ring);
         execute_PostGIS_function(conn, "ST_NPoints", int_ring, n_int_points_char);
         int n_int_points = atoi(n_int_points_char);
@@ -144,20 +144,26 @@ char *extract_WKT_from_points(YAP_Term points_list)
     memset(str, 0, sizeof(str));
     strcpy(str, "POLYGON");
 
-    create_WKT_points_string(points_list, str);
-
     char *WKT_string = malloc(1024 * sizeof(char));
-    strcpy(WKT_string, str);
+
+    if (!create_WKT_points_string(points_list, str))
+        strcpy(WKT_string, "POLYGON EMPTY");
+    else
+        strcpy(WKT_string, str);
 
     return WKT_string;
 }
 
-void create_WKT_points_string(YAP_Term points_list, char *WKT_string)
+bool create_WKT_points_string(YAP_Term points_list, char *WKT_string)
 {
     char buffer[1024];
+    int lenght = YAP_ListLength(points_list);
+
+    if (lenght == 0)
+        return false;
+
     YAP_Term head = YAP_HeadOfTerm(points_list),
              list = YAP_TailOfTerm(points_list);
-    int lenght = YAP_ListLength(points_list);
 
     if (lenght == -1 && YAP_IsFloatTerm(head) && YAP_IsFloatTerm(list))
     {
@@ -173,7 +179,8 @@ void create_WKT_points_string(YAP_Term points_list, char *WKT_string)
         strcat(WKT_string, "(");
         for (int i = 0; i < lenght; i++)
         {
-            create_WKT_points_string(head, WKT_string);
+            if (!create_WKT_points_string(head, WKT_string))
+                return false;
 
             if (i != lenght - 1)
             {
@@ -185,4 +192,5 @@ void create_WKT_points_string(YAP_Term points_list, char *WKT_string)
         }
         strcat(WKT_string, ")");
     }
+    return true;
 }

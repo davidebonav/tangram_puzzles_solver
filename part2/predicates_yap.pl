@@ -8,6 +8,9 @@
 
 % yap_predicate_to_WKT(YapPointsList, WKTString).
 
+degrees_to_radians(Degrees, Radians) :-
+    Radians is Degrees * pi / 180.
+
 % DIFFERENCE
 geom_difference(ConnName, Geometry1, Geometry2, DifferenceGeometry) :- 
     get_value(ConnName, ConnHandler),

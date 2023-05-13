@@ -17,8 +17,9 @@ geom_difference(ConnName, Geometry1, Geometry2, DifferenceGeometry) :-
     st_difference(ConnHandler, Geometry1, Geometry2, DifferenceGeometry).
 
 % ROTATION
-geom_rotation(ConnName, Geometry, RadiantsAngleRotation, RotatedGeometry) :- 
+geom_rotation(ConnName, Geometry, DegreesAngleRotation, RotatedGeometry) :- 
     get_value(ConnName, ConnHandler),
+    degrees_to_radians(DegreesAngleRotation, RadiantsAngleRotation),
     st_rotate(ConnHandler, Geometry, RadiantsAngleRotation, RotatedGeometry).
 
 % TRANSLATION

@@ -34,6 +34,6 @@ geom_translation(ConnName, Geometry, DeltaX, DeltaY, TranslatedGeometry) :-
     st_translate(ConnName, Geometry, (DeltaX, DeltaY), TranslatedGeometry).
 
 % FLOAT FUNCTION
-float_query(ConnName, Query, Output) :- 
+st_query(ConnName, Query, Output) :- 
     get_value(ConnName, ConnHandler),
-    st_float_function(ConnHandler, Query, Output).
+    st_function(ConnHandler, Query, Output).

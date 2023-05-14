@@ -86,6 +86,16 @@ void executeFF_PostGIS_function(PGconn *conn, char *function_name, char *geometr
     // printf("-> %s\t%s", sql, output);
 }
 
+void execute_arbitrary_function(PGconn *conn, char *sql, char *output)
+{
+    PGresult *result_set;
+
+    result_set = exec_sql(conn, sql);
+    strcpy(output, PQgetvalue(result_set, 0, 0));
+    PQclear(result_set);
+    // printf("-> %s\t%s", sql, output);
+}
+
 /**
  * points[] array has n_points*2 size
  */

@@ -69,7 +69,13 @@ static int c_st_rotate(void)
     free(geometry_WKT);
 
     char geometry_rotation[1024], n_int_rings[16];
-    executeD_PostGIS_function(conn, "ST_Rotate", geometry, rads,geometry_rotation);
+    
+    char sql[512];
+    sprintf(sql, "SELECT ST_Rotate('%s', radians(%f), ST_Centroid('%s'))", geometry, rads, geometry);
+    // sprintf(sql, "SELECT ST_Rotate('%s', %f, ST_Centroid('%s'))", geometry, rads, geometry);
+    execute_arbitrary_function(conn, sql, geometry_rotation);
+
+    // executeD_PostGIS_function(conn, "ST_Rotate", geometry, rads,geometry_rotation);
     execute_PostGIS_function(conn, "ST_NumInteriorRings", geometry_rotation, n_int_rings);
 
     YAP_Term res_term = extract_values(conn, geometry_rotation, atoi(n_int_rings));

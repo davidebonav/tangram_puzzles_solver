@@ -7,6 +7,7 @@ static int c_st_rotate(void);
 static int c_st_difference(void);
 static int c_st_translate(void);
 static int c_yap_predicate_to_WKT(void);
+static int c_st_float_function(void);
 
 void init_predicates()
 {
@@ -14,6 +15,7 @@ void init_predicates()
     YAP_UserCPredicate("st_rotate", c_st_rotate, 4);
     YAP_UserCPredicate("st_translate", c_st_translate, 4);
     YAP_UserCPredicate("yap_predicate_to_WKT", c_yap_predicate_to_WKT, 2);
+    YAP_UserCPredicate("st_float_function", c_st_float_function, 3);
 }
 
 /**
@@ -140,6 +142,24 @@ static int c_yap_predicate_to_WKT(void)
     free(geometry_WKT);
 
     if (!YAP_Unify(result, WKTString_yap))
+    {
+        return FALSE;
+    }
+    return TRUE;
+}
+
+static int c_st_float_function(void)
+{
+    PGconn *conn = (PGconn *)YAP_IntOfTerm(YAP_ARG1);
+    char * sql = YAP_AtomName(YAP_AtomOfTerm(YAP_ARG2));
+    YAP_Term function_res = YAP_ARG3;
+    char output[512];
+    printf("okdd %s\n", sql);
+
+    execute_arbitrary_function(conn, sql, output);
+
+    YAP_Term res_term = YAP_MkFloatTerm(atof(output));
+    if (!YAP_Unify(function_res, res_term))
     {
         return FALSE;
     }

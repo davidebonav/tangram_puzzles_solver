@@ -154,7 +154,6 @@ static int c_st_function(void)
     char * sql = YAP_AtomName(YAP_AtomOfTerm(YAP_ARG2));
     YAP_Term function_res = YAP_ARG3;
     char output[512];
-    printf("okdd %s\n", sql);
 
     execute_arbitrary_function(conn, sql, output);
 

@@ -5,12 +5,12 @@
 % in Solutions 
 % INPUT : ConnName, PuzzleId 
 % OUTPUT : Solutions
-tangram_solver(ConnName, PuzzleId, Solutions) :- 
+tangram_solver(ConnName, PuzzleId, Solutions) :-
     write('START - tangram_solver...\n'),
+    write('Input - ConnName: '), write(ConnName), write('\n'),
+    write('Input - PuzzleId: '), write(PuzzleId), write('\n'),
     get_value(ConnName, ConnHandler),
     loadData(PuzzleId, PuzzleShape, PiecesList),
-    % write(('PIECES = \n', PiecesList, '\n')),
-    % write(('PUZZLE = \n', PuzzleId, PuzzleShape, '\n')),
     solve_tangram_helper(ConnHandler, PuzzleShape, PiecesList, Solutions),
     write('END - tangram_solver...\n').
 
@@ -47,10 +47,11 @@ solve_tangram_helper(_, _, [], _).
 solve_tangram_helper(ConnHandler, PuzzleShape, PiecesList, [X|Tail]) :-
     write('START - solve_tangram_helper...\n'),
     shift_to_origin(ConnHandler, PuzzleShape, ShiftedPuzzleShape),
-    write(('Shift puzzle', PuzzleShape, ShiftedPuzzleShape, '\n')),
     select((PieceColor, PieceShape), PiecesList, RemainPiecesList),
     insert_piece(ConnHandler, ShiftedPuzzleShape, PieceShape, ResultPieceShape),
     difference(ConnHandler, ShiftedPuzzleShape, ResultPieceShape, RemainingPuzzleShape),
+    yap_predicate_to_WKT(RemainingPuzzleShape, Print),
+    write('Log - (RemainingPuzzleShape): '), write(Print), write('\n'),
     X = (PieceColor, ResultPieceShape),
     solve_tangram_helper(ConnHandler, RemainingPuzzleShape, RemainPiecesList, Tail),
     write('END - solve_tangram_helper...\n').
@@ -58,9 +59,15 @@ solve_tangram_helper(ConnHandler, PuzzleShape, PiecesList, [X|Tail]) :-
 % Shift the shape of the geometru so that the lower left corner is at the origin
 shift_to_origin(ConnHandler, Shape, ShiftedShape) :-
     write('START - shift_to_origin...\n'),
+    write('Input - Shape: '), write(Shape), write('\n'),
     st_xmin(ConnHandler, Shape, DeltaX),
     st_ymin(ConnHandler, Shape, DeltaY),
-    st_translate(ConnHandler, Shape, [-DeltaX|-DeltaY], ShiftedShape),
+    write('Log - (DeltaX, DeltaY): '), write((DeltaX, DeltaY)), write('\n'),
+    Dx is -1.0 * DeltaX, 
+    Dy is -1.0 * DeltaY,
+    write('Log - (Dx, Dy): '), write((Dx, Dy)), write('\n'),
+    translation(ConnHandler, Shape, (Dx, Dy), ShiftedShape),
+    write('Output - ShiftedShape: '), write(ShiftedShape), write('\n'),
     write('END - shift_to_origin...\n').
 
 % Try to insert the piece in the puzzle
@@ -68,9 +75,12 @@ shift_to_origin(ConnHandler, Shape, ShiftedShape) :-
 % OUTPUT : ResultPieceShape
 insert_piece(ConnHandler, PuzzleShape, PieceShape, ResultPieceShape) :-
     write('START - insert_piece...\n'),
+    write('Input - PuzzleShape: '), write(PuzzleShape), write('\n'),
+    write('Input - PieceShape: '), write(PieceShape), write('\n'),
     shift_to_origin(ConnHandler, PieceShape, SPieceShape),
     can_fit(ConnHandler, PuzzleShape, SPieceShape),
-    generate_rotation_translation_list(PuzzleShape, Combinations),
+    generate_rotation_translation_list(ConnHandler, PuzzleShape, Combinations),
     find_first(can_insert((ConnHandler, SPieceShape, PuzzleShape)), Combinations, [RotAng|[Tx|Ty]]),
     transform_piece(ConnHandler, SPieceShape, RotAng, (Tx, Ty), ResultPieceShape),
+    write('Output - ResultPieceShape: '), write(ResultPieceShape), write('\n'),
     write('END - insert_piece...\n').

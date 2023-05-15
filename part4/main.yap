@@ -7,3 +7,5 @@
 % :- db_import(solutions, solutions, conn).
 
 :- tangram_solver(conn, '1', _Solutions).
+
+:- db_close(conn).

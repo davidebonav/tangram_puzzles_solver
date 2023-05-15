@@ -6,4 +6,4 @@
 :- db_import(puzzles, puzzles, conn).
 % :- db_import(solutions, solutions, conn).
 
-% :- tangram_solver(conn, '1', Solutions).
+:- tangram_solver(conn, '1', _Solutions).

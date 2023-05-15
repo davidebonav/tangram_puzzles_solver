@@ -33,8 +33,7 @@ loadPuzzleShape(PuzzleId, PuzzleShape) :-
 % using backtracking
 % INPUT : ConnHandler, PuzzleShape, PiecesList
 % OUTPUT : Solutions
-solve_tangram_helper(_, _, _, []).
-% solve_tangram_helper(ConnHandler, _, [], []). % Oppure questo? da capire
+solve_tangram_helper(_, _, [], _).
 solve_tangram_helper(ConnHandler, PuzzleShape, PiecesList, [X|Tail]) :-
     shift_to_origin(ConnHandler, PuzzleShape, ShiftedPuzzleShape),
     select((PieceColor, PieceShape), PiecesList, RemainPiecesList),

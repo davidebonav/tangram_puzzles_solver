@@ -4,69 +4,69 @@
 
 % Generate all the rotation angles that can be used
 generate_rotation_angles_list(OutputList) :-
-    write('START - generate_rotation_angles_list...\n'),
+    print_log('START - generate_rotation_angles_list...', 3),
     findall(Degree, (between(0, 7, X), Degree is X * 45), OutputList),
-    write('END - generate_rotation_angles_list...\n').
+    print_log('END - generate_rotation_angles_list...', 3).
 
 % Generate a list of all number N : 0 <= N <= Number and N is multiple of 0.25 
 generate_multiples(Number, List) :-
-    write('START - generate_multiples...\n'),
+    print_log('START - generate_multiples...', 3),
     UpperBound is floor(Number * 4),
     findall(Value, (between(0, UpperBound, X), Value is X / 4), List),
-    write('END - generate_multiples...\n').
+    print_log('END - generate_multiples...',3).
 
 % Generate a list containing a list with all possible translation vector that can be used
 generate_translation_vector_list(MaxX, MaxY, OutputList) :-
-    write('START - generate_translation_vector_list...\n'),
+    print_log('START - generate_translation_vector_list...',3),
     generate_multiples(MaxX, XList),
     generate_multiples(MaxY, YList),
-    % write('Log - (XList, YList): '), write((XList, YList)), write('\n'),
+    print_log(('(LogXList, YList): ', (XList, YList)), 3),
     generate_combinations(XList, YList, OutputList),
-    % write('Log - (OutputList): '), write(OutputList), write('\n'),
-    write('END - generate_translation_vector_list...\n').
+    print_log(('Log - (OutputList): ', OutputList), 3),
+    print_log('END - generate_translation_vector_list...',3).
 
 % generate the list of all possibile combination beteen all possible rotation and all possible combination
 generate_rotation_translation_list(ConnHandler, PuzzleShape, Combinations) :-
-    write('START - generate_rotation_translation_list...\n'),
+    print_log('START - generate_rotation_translation_list...',3),
     generate_rotation_angles_list(RotationList),
     st_xmax(ConnHandler, PuzzleShape, MaxX),
     st_ymax(ConnHandler, PuzzleShape, MaxY),
     generate_translation_vector_list(MaxX, MaxY, TranslationList),
     generate_combinations(RotationList, TranslationList, Combinations),
-    % write('Output - Combinations: '), write(Combinations), write('\n'),
-    write('END - generate_rotation_translation_list...\n').
+    print_log(('Output - Combinations: ', Combinations), 3),
+    print_log('END - generate_rotation_translation_list...',3).
 
 % Apply the transformation to the input piece
 transform_piece(ConnHandler, Shape, RotAng, (Tx,Ty), ResultShape) :-
-    write('START - transform_piece...\n'),
+    print_log('START - transform_piece...',3),
     rotation(ConnHandler, Shape, RotAng, RotatedShape),
     translation(ConnHandler, RotatedShape, (Tx, Ty), ResultShape),
-    write('END - transform_piece...\n').
+    print_log('END - transform_piece...',3).
 
 % Check if a piece can be inserted in the puzzle or not
 can_insert((ConnHandler, Piece, Puzzle), [RotAng|[Tx|Ty]]) :-
-    write('START - can_insert...\n'),
-    write('Log - (RotAng,Tx,Ty): '), write((RotAng,Tx,Ty)), write('\n'),
+    print_log('START - can_insert...',3),
+    print_log(('(LogRotAng,Tx,Ty): ', (RotAng,Tx,Ty)), 3),
     transform_piece(ConnHandler, Piece, RotAng, (Tx,Ty), TPiece),
     % yap_predicate_to_WKT(Puzzle, WKTPuzzle),
     % yap_predicate_to_WKT(TPiece, WKTGTPiece),
     % plot_geometries(WKTPuzzle, WKTGTPiece),
     st_contain(ConnHandler, Puzzle, TPiece, Output),
     Output = true,
-    write('END - can_insert...\n').
+    print_log('END - can_insert...',3).
 
 % check the area of the pieces and of the puzzle and understand if the pieces can be added or not
 can_fit(ConnHandler, PuzzleShape, PieceShape) :-
-    write('START - can_fit...\n'),
+    print_log('START - can_fit...',3),
     geometry_to_string(PuzzleShape, PuzzleString),
     geometry_to_string(PieceShape, PieceString),
     st_query_list_helper('ST_Area', [PuzzleString], PuzzleArea),
     st_query_list_helper('ST_Area', [PieceString], PieceArea),
     concatenate(PuzzleArea, [' > '], Tmp1),
     concatenate(Tmp1, PieceArea, SQLList),
-    % write('Log - SQLList: '), write(SQLList), write('\n'),
+    print_log(('Log - SQLList: ', SQLList), 3),
     st_query(ConnHandler, SQLList, Tmp2),
     string_to_boolean(Tmp2, Output),
-    % write('Log - Output: '), write(Output), write('\n'),
+    print_log(('Log - Output: ', Output), 3),
     Output = true,
-    write('END - can_fit...\n').
+    print_log('END - can_fit...',3).

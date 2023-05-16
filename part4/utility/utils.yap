@@ -70,6 +70,13 @@ concatenate([X|Xs], List, [X|Result]) :-
 % convert integer term to float term
 integer_to_float(Int, Float) :-
     Float is Int / 1.0.
+
+% allow to print log considering the debug level
+print_log(Text, LogLevel) :-
+    get_value(debugLevel, DebugLevel),
+    (LogLevel =< DebugLevel -> 
+        (write(Text), nl) ; true).
+
 % -------------------- NOT USED --------------------
 
 % Transform an angle in degree in an angle in radians

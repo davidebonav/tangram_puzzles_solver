@@ -4,111 +4,112 @@
 % Method renaming
 % DIFFERENCE
 difference(ConnName, Geometry1, Geometry2, DifferenceGeometry) :-
-    write('START - difference...\n'),
-    write('Input - Geometry1: '), write(Geometry1), write('\n'),
-    write('Input - Geometry2: '), write(Geometry2), write('\n'),
+    print_log('START - difference...', 3),
+    print_log(('Input - Geometry1: ', Geometry1), 3),
+    print_log(('Input - Geometry2: ', Geometry2), 3),
     st_difference(ConnName, Geometry1, Geometry2, DifferenceGeometry),
-    write('Output - DifferenceGeometry: '), write(DifferenceGeometry), write('\n'),
-    write('END - difference...\n').
+    print_log(('Output - DifferenceGeometry: ', DifferenceGeometry), 3),
+    print_log('END - difference...', 3).
 % ROTATION
 rotation(ConnHandler, Geometry, IAngleRotation, RotatedGeometry) :-
-    write('START - rotation...\n'),
-    write('Input - Geometry: '), write(Geometry), write('\n'),
-    write('Input - IAngleRotation: '), write(IAngleRotation), write('\n'),
+    print_log('START - rotation...', 3),
+    print_log(('Input - Geometry: ', Geometry), 3),
+    print_log(('Input - IAngleRotation: ', IAngleRotation), 3),
     integer_to_float(IAngleRotation, FAngleRotation),
     st_rotate(ConnHandler, Geometry, FAngleRotation, RotatedGeometry),
-    write('Output - RotatedGeometry: '), write(RotatedGeometry), write('\n'),
-    write('END - rotation...\n').
+    print_log(('Output - RotatedGeometry: ', RotatedGeometry), 3),
+    print_log('END - rotation...', 3).
 % TRANSLATION
 translation(ConnHandler, Geometry, (DeltaX, DeltaY), TranslatedGeometry) :-
-    write('START - translation...\n'),
-    write('Input - Geometry: '), write(Geometry), write('\n'),
-    write('Input - (DeltaX, DeltaY): '), write((DeltaX, DeltaY)), write('\n'),
+    print_log('START - translation...', 3),
+    print_log(('Input - Geometry: ', Geometry), 3),
+    print_log(('Input - (DeltaX, DeltaY): ', (DeltaX, DeltaY)), 3),
     st_translate(ConnHandler, Geometry, [DeltaX|DeltaY], TranslatedGeometry),
-    write('Output - TranslatedGeometry: '), write(TranslatedGeometry), write('\n'),
-    write('END - translation...\n').
+    print_log(('Output - TranslatedGeometry: ', TranslatedGeometry), 3),
+    print_log('END - translation...', 3).
 % FLOAT FUNCTION - perform a query and return the output as float
 query(ConnHandler, Query, Output) :-
-    write('START - query...\n'),
-    write('Input - Query: '), write(Query), write('\n'),
+    print_log('START - query...', 3),
+    print_log(('Input - Query: ', Query), 3),
     st_function(ConnHandler, Query, Output),
-    write('Output - Output: '), write(Output), write('\n'),
-    write('END - query...\n').
+    print_log(('Output - Output: ', Output), 3),
+    print_log('END - query...', 3).
 
 % return the X/Y max/min coordsinate of the bounding rectangle of a geometry
 st_bounding_rectangle_coordinate(ConnHandler, Shape, CoordianteName, Coordinate) :-
-    write('START - st_bounding_rectangle_coordinate...\n'),
-    write('Input - Shape: '), write(Shape), write('\n'),
-    write('Input - CoordinateName: '), write(CoordinateName), write('\n'),
+    print_log('START - st_bounding_rectangle_coordinate...', 3),
+    print_log(('Input - Shape: ', Shape), 3),
+    print_log(('Input - CoordinateName: ', CoordinateName), 3),
     geometry_to_string(Shape, ShapeString),
     st_query_list_helper(CoordianteName, [ShapeString], StringsList),
     st_query_f(ConnHandler, StringsList, Coordinate),
-    write('Output - Coordinate: '), write(Coordinate), write('\n'),
-    write('END - st_bounding_rectangle_coordinate...\n').
+    print_log(('Output - Coordinate: ', Coordinate), 3),
+    print_log('END - st_bounding_rectangle_coordinate...', 3).
 
 st_xmax(ConnHandler, Shape, MaxX) :-
-    write('START - st_xmax...\n'),
-    % write('Input - Shape: '), write(Shape), write('\n'),
+    print_log('START - st_xmax...', 3),
+    print_log(('Input - Shape: ', Shape), 3),
     st_bounding_rectangle_coordinate(ConnHandler, Shape, 'ST_XMax', MaxX),
-    % write('Output - MaxX: '), write(MaxX), write('\n'),
-    write('END - st_xmax...\n').
+    print_log(('Output - MaxX: ', MaxX), 3),
+    print_log('END - st_xmax...', 3).
 st_ymax(ConnHandler, Shape, MaxY) :-
-    write('START - st_ymax...\n'),
-    % write('Input - Shape: '), write(Shape), write('\n'),
+    print_log('START - st_ymax...', 3),
+    print_log(('Input - Shape: ', Shape), 3),
     st_bounding_rectangle_coordinate(ConnHandler, Shape, 'ST_YMax', MaxY),
-    % write('Output - MaxY: '), write(MaxY), write('\n'),
-    write('END - st_ymax...\n').
+    print_log(('Output - MaxY: ', MaxY), 3),
+    print_log('END - st_ymax...', 3).
 st_xmin(ConnHandler, Shape, MinX) :-
-    write('START - st_xmin...\n'),
-    % write('Input - Shape: '), write(Shape), write('\n'),
+    print_log('START - st_xmin...', 3),
+    print_log(('Input - Shape: ', Shape), 3),
     st_bounding_rectangle_coordinate(ConnHandler, Shape, 'ST_XMin', MinX),
-    % write('Output - MinX: '), write(MinX), write('\n'),
-    write('END - st_xmin...\n').
+    print_log(('Output - MinX: ', MinX), 3),
+    print_log('END - st_xmin...', 3).
 st_ymin(ConnHandler, Shape, MinY) :-
-    write('START - st_ymin...\n'),
-    % write('Input - Shape: '), write(Shape), write('\n'),
+    print_log('START - st_ymin...', 3),
+    print_log(('Input - Shape: ', Shape), 3),
     st_bounding_rectangle_coordinate(ConnHandler, Shape, 'ST_YMin', MinY),
-    % write('Output - MinY: '), write(MinY), write('\n'),
-    write('END - st_ymin...\n').
+    print_log(('Output - MinY: ', MinY), 3),
+    print_log('END - st_ymin...', 3).
 
 % Check if GeomB is completely contained within GeomB
 st_contain(ConnHandler, GeomA, GeomB, Output) :-
-    write('START - st_contain...\n'),
-    write('Input - GeomA: '), write(GeomA), write('\n'),
-    write('Input - GeomB: '), write(GeomB), write('\n'),
+    print_log('START - st_contain...', 3),
+    print_log(('Input - GeomA: ', GeomA), 3),
+    print_log(('Input - GeomB: ', GeomB), 3),
     geometry_to_string(GeomA, GeomAString),
     geometry_to_string(GeomB, GeomBString),
     st_query_list_helper('ST_Contains', [GeomAString, GeomBString], StringsList),
     st_query(ConnHandler, StringsList, Tmp),
     string_to_boolean(Tmp, Output),
-    write('Output - Containment: '), write(Output), write('\n'),
-    write('END - st_contain...\n').
+    print_log(('Output - Containment: ', Output), 3),
+    print_log('END - st_contain...', 3).
 
 % ------ BEGINNING - QUERY UTILS------
 % Predicates for execute a generic PostGIS function
 
 % Perform a query and return the output as string
 st_query(ConnHandler, StringList, Output) :-
-    write('START - st_query...\n'),
+    print_log('START - st_query...', 3),
     concatenate_strings(StringList,StrLst),
     atom_concat('SELECT ',StrLst, Query),
-    % write('Log - StrLst: '), write(StrLst), write('\n'),
-    % write('Log - Query: '), write(Query), write('\n'),
-    query(ConnHandler, Query, Output),
-    write('END - st_query...\n').
+    % print_log('Log - StrLst: ', StrLst), 3),
+    % print_log('Log - Query: ', Query), 3),
+    query(ConnHandler, Query, Output)
+    % ,print_log('END - st_query...\n')
+    .
 
 % Perform a query and return the output as float
 st_query_f(ConnHandler, StringList, Output) :-
-    write('START - st_query_f...\n'),
-    write('Input - StringList: '), write(StringList), write('\n'),
+    print_log('START - st_query_f...', 3),
+    print_log(('Input - StringList: ', StringList), 3),
     st_query(ConnHandler, StringList, Tmp),
     string_to_float(Tmp, Output),
-    write('Output - Query Result (Float): '), write(Output), write('\n'),
-    write('END - st_query_f...\n').
+    print_log(('Output - Query Result (Float): ', Output), 3),
+    print_log('END - st_query_f...', 3).
 
 % Create the following string: FunctionName(Param1, Param2, ...)
 st_query_list_helper(FunctionName, ParamsList, OutputList) :-
-    write('START - st_query_list_helper...\n'),
+    print_log('START - st_query_list_helper...', 3),
     separate_with_commas(ParamsList, ParamsString),
     OutputList = [
         FunctionName,
@@ -116,18 +117,18 @@ st_query_list_helper(FunctionName, ParamsList, OutputList) :-
         ParamsString,
         ')'
     ],
-    % write('Output - Query List: '), write(OutputList), write('\n'),
-    write('END - st_query_list_helper...\n').
+    print_log(('Output - Query List: ', OutputList), 3),
+    print_log('END - st_query_list_helper...', 3).
 
 % Transform a geometry in a string to be added in a query
 geometry_to_string(Geometry, GeometryString) :-
-    write('START - geometry_to_string...\n'),
-    write('Input - Geometry: '), write(Geometry), write('\n'),
+    print_log('START - geometry_to_string...', 3),
+    print_log(('Input - Geometry: ', Geometry), 3),
     yap_predicate_to_WKT(Geometry, WKTGeometry),
     add_single_quotes(WKTGeometry, WKTGeometryQuoted),
     % atom_string(WKTGeometryQuoted, WKTGeometryQuotedString),
     WKTGeometryQuotedString = WKTGeometryQuoted, 
     st_query_list_helper('ST_GeomFromText',[WKTGeometryQuotedString] , StringsList),
     concatenate_strings(StringsList, GeometryString),
-    write('Output - GeometryString: '), write(GeometryString), write('\n'),
-    write('END - geometry_to_string...\n').
+    print_log(('Output - GeometryString: ', GeometryString), 3),
+    print_log('END - geometry_to_string...', 3).

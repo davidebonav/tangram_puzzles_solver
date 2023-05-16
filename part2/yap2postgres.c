@@ -145,20 +145,13 @@ static int c_db_row_continue(void)
 
             YAP_Term out_term;
             if (PQftype(res_set, j) == (Oid)POLYG_OID)
-            {
-                char n_int_rings[16];
-                execute_PostGIS_function(conn, "ST_NumInteriorRings", value, n_int_rings); 
-                out_term = extract_values(conn, value, atoi(n_int_rings));
-            }
+                out_term = extract_geometry(conn, value);
+
             else
-            {
                 out_term = YAP_MkAtomTerm(YAP_LookupAtom(value ? value : "NULL"));
-            }
 
             if (!YAP_Unify(head, out_term))
-            {
                 return FALSE;
-            }
         }
         return TRUE;
     }

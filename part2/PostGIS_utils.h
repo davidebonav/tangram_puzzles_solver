@@ -7,13 +7,19 @@
 
 #define POLYG_OID 46115
 
-void execute_PostGIS_function(PGconn *conn, char *function_name, char *geometry, char* output);
-void executeN_PostGIS_function(PGconn *conn, char *function_name, char *geometry, int n, char* output);
-void executeD_PostGIS_function(PGconn *conn, char *function_name, char *geometry, double d, char* output);
-void executeS_PostGIS_function(PGconn *conn, char *function_name, char *geometry1, char *geometry2, char* output);
-void executeFF_PostGIS_function(PGconn *conn, char *function_name, char *geometry1, double x, double y, char* output);
-YAP_Term extract_points_from_ring(PGconn *conn, char *ring, int n_points);
-YAP_Term extract_values(PGconn *conn, char *geometry, int n_int_rings);
+#include "postGIS_utils.h"
+
+static bool finish_with_error(PGconn *conn, PGresult *res);
+PGresult *exec_sql(PGconn *conn, char *sql);
+void execute_PostGIS_function(PGconn *conn, char *sql, char *output);
+
+// Extract YAP TERM
+YAP_Term extract_point(PGconn *conn, char *point);
+YAP_Term extract_ring(PGconn *conn, char *ring);
+YAP_Term extract_polygon(PGconn *conn, char *polygon);
+YAP_Term extract_geometry(PGconn *conn, char *geometry);
+
+// EXTRACTY WKT
 char *extract_WKT_from_points(YAP_Term points_list);
 bool create_WKT_points_string(YAP_Term points_list, char *WKT_string);
 

@@ -19,7 +19,7 @@ try_rotate(A, Shape) :-
     pieces(_,_,_,Shape),
     geom_rotation(conn, Shape, 90.0, A).
 
-try_diff(A, Shape1, Shape2, B) :-
-    pieces('1',_,_,Shape1),
-    pieces(B,_,_,Shape2),
-    geom_difference(conn, Shape1, Shape2, A).
+try_diff(Difference, ShapeGeometry1, ShapeGeometry2, IdGeometry2) :-
+    pieces('1',_,_,ShapeGeometry1),
+    pieces(IdGeometry2,_,_,ShapeGeometry2),
+    geom_difference(conn, ShapeGeometry1, ShapeGeometry2, Difference).

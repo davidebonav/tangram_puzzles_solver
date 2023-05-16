@@ -36,12 +36,12 @@ query(ConnHandler, Query, Output) :-
     print_log('END - query...', 3).
 
 % return the X/Y max/min coordsinate of the bounding rectangle of a geometry
-st_bounding_rectangle_coordinate(ConnHandler, Shape, CoordianteName, Coordinate) :-
+st_bounding_rectangle_coordinate(ConnHandler, Shape, CoordinateName, Coordinate) :-
     print_log('START - st_bounding_rectangle_coordinate...', 3),
     print_log(('Input - Shape: ', Shape), 3),
     print_log(('Input - CoordinateName: ', CoordinateName), 3),
     geometry_to_string(Shape, ShapeString),
-    st_query_list_helper(CoordianteName, [ShapeString], StringsList),
+    st_query_list_helper(CoordinateName, [ShapeString], StringsList),
     st_query_f(ConnHandler, StringsList, Coordinate),
     print_log(('Output - Coordinate: ', Coordinate), 3),
     print_log('END - st_bounding_rectangle_coordinate...', 3).

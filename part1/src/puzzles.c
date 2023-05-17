@@ -12,7 +12,8 @@ const char *create_puzzles_table_sql = "CREATE TABLE IF NOT EXISTS \
               ('', '', '');";*/
 const char *insert_puzzles_sql = "INSERT INTO puzzles(puzzle_name, shape) VALUES\
       ('first_puzzle', 'POLYGON((0.25 0.25,0 0.5,0.25 0.75,-0.25 1.25,0.5 1.25,1.25 1.25,0.75 0.75,1 0.5,0.75 0.25,1 0,0.5 0,0 0,0.25 0.25))'), \
-      ('second_puzzle', 'POLYGON((0 0.5,0.25 0.75,0 1,-0.25 1.25,0.25 1.25,0.5 1,0.75 1.25,1.25 1.25,0.75 0.75,1 0.5,0.75 0.25,1 0,0 0,0.25 0.25,0 0.5))');";
+      ('second_puzzle', 'POLYGON((0 0.5,0.25 0.75,0 1,-0.25 1.25,0.25 1.25,0.5 1,0.75 1.25,1.25 1.25,0.75 0.75,1 0.5,0.75 0.25,1 0,0 0,0.25 0.25,0 0.5))'), \
+      ('third_puzzle', 'POLYGON((0 0,1.06 0,0.78 0.28,1.03 0.53,0.78 0.78,1.23 1.24,-0.18 1.24,0.27 0.78,0.02 0.53,0.27 0.28,0 0), (0.53 0.53, 0.70 0.35, 0.35 0.35, 0.53 0.53))');";
 const char *select_all_puzzles_sql = "SELECT id, puzzle_name, st_astext(shape) from puzzles";
 const char *select_count_puzzles_sql = "SELECT COUNT(*) from puzzles";
 

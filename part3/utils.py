@@ -1,4 +1,8 @@
 import matplotlib.pyplot as plt
+from matplotlib.path import Path
+from matplotlib.patches import PathPatch
+from matplotlib.collections import PatchCollection
+import numpy as np
 
 def register_geometry_type():
     # https://www.psycopg.org/docs/advanced.html#type-casting-of-sql-types-into-python-objects
@@ -50,4 +54,17 @@ def db_row_to_patch(points, color='gray', id=None,alpha=0.9):
 #     matrix = [[arr[i*ncol + j] for j in range(ncol)] for i in range(nrow)]
 #     return matrix
 
-
+def plot_polygon(ax, poly, **kwargs):
+    path = Path.make_compound_path(
+           Path(np.asarray(poly.exterior.coords)[:, :2]),
+           *[
+                Path(np.asarray(ring.coords)[:, :2]) 
+                for ring in poly.interiors
+            ])
+ 
+    patch = PathPatch(path, **kwargs)
+    collection = PatchCollection([patch], **kwargs)
+    
+    ax.add_collection(collection, autolim=True)
+    ax.autoscale_view()
+    return collection

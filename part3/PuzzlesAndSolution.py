@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from utils import db_row_to_patch
+from utils import db_row_to_patch, plot_polygon
 from SolutionsTable import SolutionsTable
 
 import matplotlib.pyplot as plt
@@ -19,7 +19,7 @@ class PuzzlesAndSolution:
         self.colors = [row[0] for row in rows]
 
     def get_puzzles(self):
-        sql = "SELECT * FROM puzzles ORDER BY id"
+        sql = "SELECT * FROM puzzles ORDER BY id DESC"
         cur = self.conn.cursor()
         cur.execute(sql)
         self.puzzles = cur.fetchall()
@@ -53,9 +53,11 @@ class PuzzlesAndSolution:
 
             ax.clear()
             ax.set_title(f"id={puzzle[0]}, name={puzzle[1]}")
-            patch = db_row_to_patch(
-                    points=list(puzzle[2].exterior.coords))
-            ax.add_patch(patch)
+            plot_polygon(ax, puzzle[2], 
+                         color='gray',
+                         alpha=0.9
+                         )
+
             ax.set_xlim(-0.3, 1.3)
             ax.set_ylim(-0.1, 1.3)
             ax.set_aspect("equal")
@@ -70,10 +72,10 @@ class PuzzlesAndSolution:
             ax.clear()
             ax.set_title(f"puzzle {solution[0]} solution")
             for k in range(1,len(solution)):
-                patch = db_row_to_patch(
-                    points=list(solution[k].exterior.coords), 
-                    color=self.colors[k-1])
-                ax.add_patch(patch)
+                plot_polygon(ax, solution[k], 
+                         color=self.colors[k-1],
+                         alpha=0.9
+                         )
             ax.set_xlim(-0.3, 1.3)
             ax.set_ylim(-0.1, 1.3)
             ax.set_aspect("equal")

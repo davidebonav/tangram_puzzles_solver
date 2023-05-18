@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from Table import Table
-from utils import db_row_to_patch
+from utils import plot_polygon
 
 class SolutionsTable(Table):
 
@@ -54,6 +54,7 @@ class SolutionsTable(Table):
 
     def set_ax_patches(self,ax,row):
         for i in range(1,len(row)):
-            patch = db_row_to_patch(
-                    points=list(row[i].exterior.coords), color=self.colors[i-1])
-            ax.add_patch(patch)
+            plot_polygon(ax, row[i], 
+                color=self.colors[i-1],
+                alpha=0.9
+            )

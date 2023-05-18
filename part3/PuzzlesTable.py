@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from Table import Table
-from utils import db_row_to_patch
+from utils import plot_polygon
 
 class PuzzlesTable(Table):
 
@@ -22,9 +22,9 @@ class PuzzlesTable(Table):
         ax.set_title(f"id={row[PuzzlesTable.ID]}, name={row[PuzzlesTable.PUZZLE_NAME]}")
 
     def set_ax_patches(self,ax,row):
-        patch = db_row_to_patch(
-                    points=list(row[PuzzlesTable.SHAPE].exterior.coords))
-        ax.add_patch(patch)
+        plot_polygon(ax, row[PuzzlesTable.SHAPE], 
+            color='gray',
+            alpha=0.9)
 
     @staticmethod
     def set_ax_xylim(ax):

@@ -77,6 +77,26 @@ print_log(Text, LogLevel) :-
     (LogLevel =< DebugLevel -> 
         (write(Text), nl) ; true).
 
+% take in input a list of list (a list with more than 1 dimension) 
+% and transform in a flat list
+flatten_list([], []).
+flatten_list([[]|T], FlatList) :-
+  flatten_list(T, FlatList).
+flatten_list([H|T], FlatList) :-
+  is_list(H),
+  flatten_list(H, FlatHead),
+  flatten_list(T, FlatTail),
+  concatenate(FlatHead, FlatTail, FlatList).
+flatten_list([H|T], [H|FlatTail]) :-
+  \+ is_list(H),
+  flatten_list(T, FlatTail).
+
+% transform a list in another list using the predicate passed in TransformRule
+transform_list([], _, []). % Base case: Empty list transforms to an empty list.
+transform_list([X|Xs], TransformRule, [Y|Ys]) :-
+  call(TransformRule, X, Y),   % Call the transformation rule with X and obtain Y.
+  transform_list(Xs, TransformRule, Ys). 
+
 % -------------------- NOT USED --------------------
 
 % Transform an angle in degree in an angle in radians

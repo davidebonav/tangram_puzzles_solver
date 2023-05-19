@@ -48,8 +48,8 @@ solve_tangram_helper(ConnHandler, PuzzleShape, PiecesList, [X|Tail]) :-
     select((PieceColor, PieceShape), PiecesList, RemainPiecesList),
     insert_piece(ConnHandler, ShiftedPuzzleShape, PieceShape, ResultPieceShape),
     difference(ConnHandler, ShiftedPuzzleShape, ResultPieceShape, RemainingPuzzleShape),
-    yap_predicate_to_WKT(RemainingPuzzleShape, Print),
-    print_log(('Log - (RemainingPuzzleShape): ', Print), 1),
+    yap_predicate_to_WKT(ShiftedPuzzleShape, Print), print_log(('Log - (ShiftedPuzzleShape): ', Print), 2),
+    yap_predicate_to_WKT(RemainingPuzzleShape, Print2), print_log(('Log - (RemainingPuzzleShape): ', Print2), 1),
     X = (PieceColor, ResultPieceShape),
     solve_tangram_helper(ConnHandler, RemainingPuzzleShape, RemainPiecesList, Tail),
     print_log('END - solve_tangram_helper...', 2).
@@ -77,8 +77,9 @@ insert_piece(ConnHandler, PuzzleShape, PieceShape, ResultPieceShape) :-
     print_log(('Input - PieceShape: ', PieceShape), 3),
     shift_to_origin(ConnHandler, PieceShape, SPieceShape),
     can_fit(ConnHandler, PuzzleShape, SPieceShape),
-    generate_rotation_translation_list(ConnHandler, PuzzleShape, Combinations),
-    find_first(can_insert((ConnHandler, SPieceShape, PuzzleShape)), Combinations, [RotAng|[Tx|Ty]]),
-    transform_piece(ConnHandler, SPieceShape, RotAng, (Tx, Ty), ResultPieceShape),
+    % generate_rotation_translation_list(ConnHandler, PuzzleShape, Combinations),
+    generate_rotation_translation_list(PuzzleShape, SPieceShape, Combinations),
+    find_first(can_insert((ConnHandler, SPieceShape, PuzzleShape)), Combinations, Out),
+    transform_piece(ConnHandler, SPieceShape, Out, ResultPieceShape),
     print_log(('Output - ResultPieceShape: ', ResultPieceShape), 3),
     print_log('END - insert_piece...', 3).

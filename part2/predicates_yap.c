@@ -3,7 +3,8 @@
 #include "postGIS_utils.h"
 
 void init_predicates();
-static int c_st_rotate(void);
+static int c_st_rotate_v1(void);
+static int c_st_rotate_v2(void);
 static int c_st_difference(void);
 static int c_st_translate(void);
 static int c_yap_predicate_to_WKT(void);
@@ -12,7 +13,8 @@ static int c_st_function(void);
 void init_predicates()
 {
   YAP_UserCPredicate("st_difference", c_st_difference, 4);
-  YAP_UserCPredicate("st_rotate", c_st_rotate, 4);
+  YAP_UserCPredicate("st_rotate", c_st_rotate_v1, 4);
+  YAP_UserCPredicate("st_rotate", c_st_rotate_v2, 5);
   YAP_UserCPredicate("st_translate", c_st_translate, 4);
   YAP_UserCPredicate("yap_predicate_to_WKT", c_yap_predicate_to_WKT, 2);
   YAP_UserCPredicate("st_function", c_st_function, 3);
@@ -51,7 +53,7 @@ static int c_st_difference(void)
   return TRUE;
 }
 
-static int c_st_rotate(void)
+static int c_st_rotate_v1(void)
 {
   PGconn *conn = (PGconn *)YAP_IntOfTerm(YAP_ARG1);
 
@@ -69,6 +71,34 @@ static int c_st_rotate(void)
 
   char geometry_rotation[1024];
   sprintf(sql, "SELECT ST_Rotate('%s', radians(%f), ST_Centroid('%s'))", geometry, rads, geometry);
+  execute_PostGIS_function(conn, sql, geometry_rotation);
+
+  YAP_Term res_term = extract_geometry(conn, geometry_rotation);
+  if (!YAP_Unify(rot_res, res_term))
+    return FALSE;
+  return TRUE;
+}
+
+static int c_st_rotate_v2(void)
+{
+  PGconn *conn = (PGconn *)YAP_IntOfTerm(YAP_ARG1);
+
+  YAP_Term geometry_yap = YAP_ARG2;
+  double rads = YAP_FloatOfTerm(YAP_ARG3),
+         x = YAP_FloatOfTerm(YAP_HeadOfTerm(YAP_ARG4)),
+         y = YAP_FloatOfTerm(YAP_TailOfTerm(YAP_ARG4));
+  YAP_Term rot_res = YAP_ARG5;
+
+  char *geometry_WKT = extract_WKT_from_points(geometry_yap);
+
+  char geometry[1024], sql[1024];
+  sprintf(sql, "SELECT ST_GeomFromText('%s')", geometry_WKT);
+  execute_PostGIS_function(conn, sql, geometry);
+
+  free(geometry_WKT);
+
+  char geometry_rotation[1024];
+  sprintf(sql, "SELECT ST_Rotate('%s', radians(%f), 'POINT(%f %f)')", geometry, rads, x, y);
   execute_PostGIS_function(conn, sql, geometry_rotation);
 
   YAP_Term res_term = extract_geometry(conn, geometry_rotation);

@@ -26,31 +26,45 @@ generate_translation_vector_list(MaxX, MaxY, OutputList) :-
     print_log('END - generate_translation_vector_list...',3).
 
 % generate the list of all possibile combination beteen all possible rotation and all possible combination
-generate_rotation_translation_list(ConnHandler, PuzzleShape, Combinations) :-
+generate_rotation_translation_list(PuzzleShape, PieceShape, Combinations) :-
     print_log('START - generate_rotation_translation_list...',3),
+    flatten_list(PuzzleShape, FlatPuzzle),
+    flatten_list(PieceShape, FlatPiece),
+    generate_combinations(FlatPuzzle, FlatPiece, CombinationPoints),
+    print_log(('Log - CombinationPoints: ', CombinationPoints), 3),
+    % transform_list(CombinationPoints, point_to_translation_vector, TranslationList),
+    TranslationList = CombinationPoints,
     generate_rotation_angles_list(RotationList),
-    st_xmax(ConnHandler, PuzzleShape, MaxX),
-    st_ymax(ConnHandler, PuzzleShape, MaxY),
-    generate_translation_vector_list(MaxX, MaxY, TranslationList),
     generate_combinations(RotationList, TranslationList, Combinations),
     print_log(('Output - Combinations: ', Combinations), 3),
     print_log('END - generate_rotation_translation_list...',3).
 
+point_to_translation_vector([[X1|Y1]|[X2|Y2]], [Tx|Ty]) :-
+    print_log('START - point_to_translation_vector...',3),
+    Tx is X1 - X2,
+    Ty is Y1 - Y2,
+    print_log(('Log - translation (Tx,Ty): ', (Tx, Ty)), 3),
+    print_log('END - point_to_translation_vector...',3).
+
 % Apply the transformation to the input piece
-transform_piece(ConnHandler, Shape, RotAng, (Tx,Ty), ResultShape) :-
+transform_piece(ConnHandler, Shape, [RotAng|[[X1|Y1]|[X2|Y2]]], ResultShape) :-
     print_log('START - transform_piece...',3),
-    rotation(ConnHandler, Shape, RotAng, RotatedShape),
-    translation(ConnHandler, RotatedShape, (Tx, Ty), ResultShape),
+    print_log(('Log - translation (X1,Y1): ', (X1,Y1)), 3),
+    print_log(('Log - translation (X2,Y2): ', (X2,Y2)), 3),
+    print_log(('Log - translation RotAng: ', RotAng), 3),
+    point_to_translation_vector([[X1|Y1]|[X2|Y2]], [Tx|Ty]),
+    translation(ConnHandler, Shape, (Tx, Ty), TraslShape),
+    rotation(ConnHandler, TraslShape, RotAng, (X1, Y1), ResultShape),
     print_log('END - transform_piece...',3).
 
 % Check if a piece can be inserted in the puzzle or not
-can_insert((ConnHandler, Piece, Puzzle), [RotAng|[Tx|Ty]]) :-
+can_insert((ConnHandler, Piece, Puzzle), Elem) :-
     print_log('START - can_insert...',3),
     print_log(('(LogRotAng,Tx,Ty): ', (RotAng,Tx,Ty)), 3),
-    transform_piece(ConnHandler, Piece, RotAng, (Tx,Ty), TPiece),
-    % yap_predicate_to_WKT(Puzzle, WKTPuzzle),
-    % yap_predicate_to_WKT(TPiece, WKTGTPiece),
-    % plot_geometries(WKTPuzzle, WKTGTPiece),
+    transform_piece(ConnHandler, Piece, Elem, TPiece),
+    yap_predicate_to_WKT(Puzzle, WKTPuzzle), print_log(('Log - WKTPuzzle: ', WKTPuzzle), 3),
+    yap_predicate_to_WKT(Piece, WKTPiece), print_log(('Log - WKTPiece: ', WKTPiece), 3),
+    yap_predicate_to_WKT(TPiece, WKTTPiece), print_log(('Log - WKTTPiece: ', WKTTPiece), 2),
     st_contain(ConnHandler, Puzzle, TPiece, Output),
     Output = true,
     print_log('END - can_insert...',3).

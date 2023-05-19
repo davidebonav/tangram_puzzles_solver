@@ -19,6 +19,14 @@ rotation(ConnHandler, Geometry, IAngleRotation, RotatedGeometry) :-
     st_rotate(ConnHandler, Geometry, FAngleRotation, RotatedGeometry),
     print_log(('Output - RotatedGeometry: ', RotatedGeometry), 3),
     print_log('END - rotation...', 3).
+rotation(ConnHandler, Geometry, IAngleRotation, (RotCenterX, RotCenterY), RotatedGeometry) :-
+    print_log('START - rotation...', 3),
+    print_log(('Input - Geometry: ', Geometry), 3),
+    print_log(('Input - IAngleRotation: ', IAngleRotation), 3),
+    integer_to_float(IAngleRotation, FAngleRotation),
+    st_rotate(ConnHandler, Geometry, FAngleRotation, [RotCenterX|RotCenterY], RotatedGeometry),
+    print_log(('Output - RotatedGeometry: ', RotatedGeometry), 3),
+    print_log('END - rotation...', 3).
 % TRANSLATION
 translation(ConnHandler, Geometry, (DeltaX, DeltaY), TranslatedGeometry) :-
     print_log('START - translation...', 3),

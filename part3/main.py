@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import psycopg2
+from PlotFromInput import PlotFromInput
 from utils import register_geometry_type
 from PiecesTable import *
 from PuzzlesTable import *
@@ -31,6 +32,7 @@ menu_1 = """
 --> 2. puzzles table
 --> 3. solutions table
 --> 4. plot puzzles and solutions
+--> 5. plot from input
 --> 0. exit
 -> """
 
@@ -69,6 +71,10 @@ def main():
         elif choise == '4':
             tmp = PuzzlesAndSolution(conn)
             tmp.plot_table()
+            continue
+        elif choise == '5':
+            wkt_string = input("-> insert wkt string: ")
+            PlotFromInput.plot_polygon(wkt_string)
             continue
         elif choise == '0':
             safe_exit(conn)

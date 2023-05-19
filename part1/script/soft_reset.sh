@@ -2,7 +2,6 @@
 
 # Load config values
 # source ./project.conf
-. ./project.conf
 
 sudo -u postgres psql -d tangram_puzzle -c "DROP TABLE IF EXISTS solutions;"
 sudo -u postgres psql -d tangram_puzzle -c "DROP TABLE IF EXISTS puzzles;"

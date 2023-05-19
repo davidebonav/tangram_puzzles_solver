@@ -9,7 +9,7 @@
 :- nl,write('To print the terms:\n'),
     write('\t-. pieces(Id, Name, Color, Shape).\n'),
     write('\t-. puzzles(Id, Name, Shape).\n'),
-    write('\t-. puzzles(PuzzleId, PieceId, Shape).\n'),
+    write('\t-. solutions(PuzzleId, PieceId, Shape).\n'),
     nl.
 
 :- nl,write('To test the predicate:\n'),

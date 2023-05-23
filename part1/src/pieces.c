@@ -1,6 +1,9 @@
 #include <pieces.h>
 
 // SQL
+
+const char *drop_pieces_if_exist = "DROP TABLE IF EXISTS pieces;";
+
 const char *create_pieces_table_sql = "CREATE TABLE IF NOT EXISTS \
       pieces( \
           id SERIAL PRIMARY KEY, \
@@ -29,7 +32,7 @@ const char *select_count_pieces_sql = "SELECT COUNT(*) from pieces";
 int createPiecesTable(PGconn *conn)
 {
   int num_rows;
-  num_rows = createTable(conn, create_pieces_table_sql);
+  num_rows = createTable(conn, create_pieces_table_sql, drop_pieces_if_exist);
   return num_rows;
 }
 

@@ -1,6 +1,8 @@
 #include <solutions.h>
 
 // SQL
+const char *drop_solutions_if_exist = "DROP TABLE IF EXISTS solutions;";
+
 const char *create_solutions_table_sql = "CREATE TABLE IF NOT EXISTS \
       solutions( \
           puzzle_id INT, \
@@ -44,7 +46,7 @@ const char *select_count_solutions_sql = "SELECT COUNT(*) from solutions";
 int createSolutionsTable(PGconn *conn)
 {
   int num_rows;
-  num_rows = createTable(conn, create_solutions_table_sql);
+  num_rows = createTable(conn, create_solutions_table_sql, drop_solutions_if_exist);
   return num_rows;
 }
 

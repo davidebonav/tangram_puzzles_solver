@@ -33,7 +33,7 @@ PGconn *db_connect()
     return conn;
 }
 
-int createTable(PGconn *conn, const char *create_table_sql)
+int createTable(PGconn *conn, const char *create_table_sql, const char *drop_if_exist_sql)
 {
     printf("Creating table...\n");
 
@@ -41,6 +41,7 @@ int createTable(PGconn *conn, const char *create_table_sql)
     int num_rows;
 
     // Create the 'tableName' table
+    res = PQexec(conn, drop_if_exist_sql);
     res = PQexec(conn, create_table_sql);
     if (PQresultStatus(res) != PGRES_COMMAND_OK)
     {

@@ -1,6 +1,8 @@
 #include <puzzles.h>
 
 // SQL
+const char *drop_puzzles_if_exist = "DROP TABLE IF EXISTS puzzles;";
+
 const char *create_puzzles_table_sql = "CREATE TABLE IF NOT EXISTS \
       puzzles( \
           id SERIAL PRIMARY KEY, \
@@ -21,7 +23,7 @@ const char *select_count_puzzles_sql = "SELECT COUNT(*) from puzzles";
 int createPuzzlesTable(PGconn *conn)
 {
   int num_rows;
-  num_rows = createTable(conn, create_puzzles_table_sql);
+  num_rows = createTable(conn, create_puzzles_table_sql, drop_puzzles_if_exist);
   return num_rows;
 }
 

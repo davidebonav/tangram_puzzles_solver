@@ -26,15 +26,13 @@ def print_query_answer(cur, rows = None):
     out_string = "{: <25} "*arity;
 
     # print column names
-    col = [f"(ColName = {desc.name}," for desc in cur.description]
-    print(out_string.format(*col))
-    col = [f" Oid = {desc.type_code})" for desc in cur.description]
+    col = [f"(ColName = {desc.name}, Oid = {desc.type_code})" for desc in cur.description]
     print(out_string.format(*col))
 
     # Process results
     rows = cur.fetchall() if rows is None else rows
     for row in rows:
-        str_row = [str(col) for col in row] 
+        str_row = [f"{str(col)}," for col in row] 
         print(out_string.format(*str_row))
         # for i in range(arity):
         #     print(f"{row[i]}\t",end="")

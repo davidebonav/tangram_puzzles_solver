@@ -6,7 +6,7 @@
 void test_version();
 void finish_with_error(PGconn *conn, PGresult *res);
 PGconn *db_connect();
-int createTable(PGconn *conn, const char *create_table_sql);
+int createTable(PGconn *conn, const char *create_table_sql, const char *drop_if_exists_sql);
 int insertIntoTable(PGconn *conn, const char *insert_sql);
 PGresult *sqlQuery(PGconn *conn, const char *sql_query);
 

@@ -2,7 +2,7 @@
 
 // SQL
 
-const char *drop_pieces_if_exist = "DROP TABLE IF EXISTS pieces;";
+const char *drop_pieces_if_exist = "DROP TABLE IF EXISTS pieces CASCADE;";
 
 const char *create_pieces_table_sql = "CREATE TABLE IF NOT EXISTS \
       pieces( \

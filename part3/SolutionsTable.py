@@ -55,8 +55,8 @@ class SolutionsTable(Table):
 
     def set_ax_patches(self,ax,row):
         for i in range(1,len(row)):
-            row2 = [wkb.loads(row[idx], hex=True) if idx != 0 else row[idx] for idx, val in enumerate(row)]
-            plot_polygon(ax, row2[i], 
+            casted_row = [wkb.loads(row[idx], hex=True) if idx != 0 else row[idx] for idx, val in enumerate(row)]
+            plot_polygon(ax, casted_row[i], 
                 color=self.colors[i-1],
                 alpha=0.9
             )

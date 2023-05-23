@@ -2,6 +2,7 @@
 
 from Table import Table
 from utils import plot_polygon
+from shapely import wkb
 
 class PuzzlesTable(Table):
 
@@ -22,7 +23,8 @@ class PuzzlesTable(Table):
         ax.set_title(f"id={row[PuzzlesTable.ID]}, name={row[PuzzlesTable.PUZZLE_NAME]}")
 
     def set_ax_patches(self,ax,row):
-        plot_polygon(ax, row[PuzzlesTable.SHAPE], 
+        casted_row = [wkb.loads(row[idx], hex=True) if idx == 2 else row[idx] for idx, val in enumerate(row)]
+        plot_polygon(ax, casted_row[PuzzlesTable.SHAPE], 
             color='gray',
             alpha=0.9)
 

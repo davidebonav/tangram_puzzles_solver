@@ -44,7 +44,7 @@ const char *insert_solutions_sql = "INSERT INTO solutions(puzzle_id, piece_id, p
       (4,4,'POLYGON((0.651 0, 1.004 0, 1.004 -0.354, 0.651 0))'), \
       (4,5,'POLYGON((1.004 0, 1.505 0, 1.258 0.25, 1.004 0))'), \
       (4,6,'POLYGON((1.258 0.25, 1.505 0, 1.754 0.249, 1.505 0.495, 1.258 0.25))'), \
-      (4,7,'POLYGON((1.754 0.249, 1.505 0.495, 1.506 0.991, 1.754 0.744,1.754 0.249))');";
+      (4,7,'POLYGON((1.754 0.249, 1.505 0.495, 1.505 0.991, 1.754 0.744,1.754 0.249))');";
 const char *select_all_solutions_sql = "SELECT puzzle_name, piece_type, st_astext(piece_coordinates) \
     FROM solutions s, pieces pi, puzzles pu \
     WHERE s.puzzle_id=pu.id AND s.piece_id=pi.id";

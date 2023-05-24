@@ -59,8 +59,8 @@ class Table(metaclass=abc.ABCMeta):
                 axes[i][j].clear()
                 self.set_ax_title(axes[i][j],row)
                 self.set_ax_patches(axes[i][j],row)
-                # axes[i][j].autoscale_view()
-                self.set_ax_xylim(axes[i][j])
+                axes[i][j].autoscale_view()
+                # self.set_ax_xylim(axes[i][j])
                 axes[i][j].set_aspect("equal")
 
                 plt.pause(0.005)

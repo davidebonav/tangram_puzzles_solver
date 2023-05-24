@@ -33,7 +33,7 @@ PGconn *db_connect()
     return conn;
 }
 
-int createTable(PGconn *conn, const char *create_table_sql, const char *drop_if_exist_sql)
+int createTable(PGconn *conn, const char *create_table_sql)
 {
     printf("Creating table...\n");
 
@@ -41,12 +41,6 @@ int createTable(PGconn *conn, const char *create_table_sql, const char *drop_if_
     int num_rows;
 
     // Create the 'tableName' table
-    res = PQexec(conn, drop_if_exist_sql);
-    if (PQresultStatus(res) != PGRES_COMMAND_OK)
-    {
-        fprintf(stderr, "Table deletion failed... %s \n", create_table_sql);
-        finish_with_error(conn, res);
-    }
     res = PQexec(conn, create_table_sql);
     if (PQresultStatus(res) != PGRES_COMMAND_OK)
     {

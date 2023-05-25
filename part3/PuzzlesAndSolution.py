@@ -58,8 +58,7 @@ class PuzzlesAndSolution:
                          alpha=0.9
                          )
 
-            ax.set_xlim(-0.3, 1.3)
-            ax.set_ylim(-0.1, 1.3)
+            ax.autoscale_view()
             ax.set_aspect("equal")
 
             plt.pause(0.005)
@@ -76,8 +75,7 @@ class PuzzlesAndSolution:
                          color=self.colors[k-1],
                          alpha=0.9
                          )
-            ax.set_xlim(-0.3, 1.3)
-            ax.set_ylim(-0.1, 1.3)
+            ax.autoscale_view()
             ax.set_aspect("equal")
 
             plt.pause(0.005)

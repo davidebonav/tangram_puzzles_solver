@@ -60,7 +60,7 @@ transform_piece(ConnHandler, Shape, [RotAng|[[X1|Y1]|[X2|Y2]]], ResultShape) :-
 % Check if a piece can be inserted in the puzzle or not
 can_insert((ConnHandler, Piece, Puzzle), Elem) :-
     print_log('START - can_insert...',3),
-    print_log(('(LogRotAng,Tx,Ty): ', (RotAng,Tx,Ty)), 3),
+    print_log(('(Elem): ', Elem), 3),
     transform_piece(ConnHandler, Piece, Elem, TPiece),
     yap_predicate_to_WKT(Puzzle, WKTPuzzle), print_log(('Log - WKTPuzzle: ', WKTPuzzle), 3),
     yap_predicate_to_WKT(Piece, WKTPiece), print_log(('Log - WKTPiece: ', WKTPiece), 3),
